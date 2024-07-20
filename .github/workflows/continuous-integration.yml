@@ -13,6 +13,8 @@ jobs:
 
             - name: Debug
               run: "ls -la"
+            - name: Install dependencies
+              run: "npm install"
             - name: lint
               run: "npm run lint"
 
