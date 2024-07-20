@@ -1,0 +1,13 @@
+name: "[CI] Continuous Integration"
+
+# Sempre que tiver um commit ou PR for aberto, o CI será executado
+on:
+    pull_request:
+        types: [opened, synchronize]
+            
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: lint
+              run: "echo 'linting'"

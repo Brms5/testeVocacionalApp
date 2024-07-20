@@ -12,10 +12,8 @@ interface InputInstituicaoCard {
 }
 
 function InstituicaoCard({
-  id,
   nome,
   imagem,
-  instituicao_tipo_id,
 }: InputInstituicaoCard) {
   return (
     <Card sx={{ width: 350, height: 220 }}>

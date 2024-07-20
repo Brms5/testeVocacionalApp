@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { instituicaoService } from "@/client/services/Instituicao";
 import { modalidadeDeIngressoService } from "@/client/services/ModalidadeDeIngresso";
 import { provaService } from "@/client/services/Prova";
@@ -7,7 +8,6 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 function Instituicao() {
   const [instituicao, setInstituicao] = useState<Instituicao>();
@@ -119,7 +119,7 @@ function Instituicao() {
     <div className="flex max-w-screen justify-center items-center">
       {instituicao ? (
         <div className="flex-col max-w-2xl mt-10 justify-center">
-          <div className="flex justify-center items-center mb-5">
+          <div id="instituicao-nome" className="flex justify-center items-center mb-5">
             <Typography variant="h3" gutterBottom>
               {instituicao?.nome}
             </Typography>

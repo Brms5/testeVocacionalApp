@@ -6,11 +6,12 @@ function Home() {
   return (
     <div className="flex-col w-screen">
       <div className="mt-10">
-        <h1 className="text-2xl font-bold text-center mb-10">
+        <h1 id="domba-title" className="text-2xl font-bold text-center mb-10">
           Portal voltado aos estudantes da Escola Estadual Dom Barreto.
         </h1>
         <div className="mb-10">
           <Image
+            id="domba-image"
             src="/dom_barreto.jpg"
             alt="Escola Estadual Dom Barreto"
             width={600}
@@ -18,7 +19,7 @@ function Home() {
             className="mx-auto"
           />
         </div>
-        <p className="text-center">
+        <p id="domba-description" className="text-center">
           Desenvolvido pelos docentes da Escola Estadual Dom Barreto, a
           plataforma visa facilitar o acesso dos estudantes às informações
           relacionadas a vestibulares, cursos técnicos, cursinhos populares,
