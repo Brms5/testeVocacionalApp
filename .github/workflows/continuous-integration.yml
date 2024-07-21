@@ -4,6 +4,7 @@ name: "[CI] Continuous Integration"
 on:
     pull_request:
         types: [opened, synchronize]
+    push:
             
 jobs:
     lint:
@@ -11,11 +12,25 @@ jobs:
         steps:
             - uses: actions/checkout@v3
 
-            - name: Debug
+            - name: "Debug"
               run: "ls -la"
-            - name: Install dependencies
+            - name: "Install dependencies"
               run: "npm install"
-            - name: lint
+            - name: "lint"
               run: "npm run lint"
+
+    tests:
+        runs-on: ubuntu-latest
+        container: cypress/browsers:node-20.14.0-chrome-126.0.6478.114-1-ff-127.0.1-edge-126.0.2592.61-1
+        steps:
+            # - name: Checkout
+            - uses: actions/checkout@v4
+            # Install npm dependencies, cache them correctly
+            # and run all Cypress tests
+            - name: "Install dependencies"
+              run: "npm install"
+            - name: "tests"
+              run: "npm run test"
+
 
             
