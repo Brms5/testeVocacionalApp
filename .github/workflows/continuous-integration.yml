@@ -5,8 +5,8 @@ on:
         types: [opened, synchronize]
 
 env:
-    SUPABASE_URL: ${{ vars.SUPABASE_URL }}
     SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
+    SUPABASE_URL: ${{ vars.SUPABASE_URL }}
             
 jobs:
     lint:
@@ -32,9 +32,9 @@ jobs:
                 echo "Supabase Key: ${{ vars.SUPABASE_KEY }}"
                 echo "Supabase URL: ${{ vars.SUPABASE_URL }}"
 
-              env:
-                SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-                SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
+            #   env:
+            #     SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+            #     SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
 
             # Install npm dependencies, cache them correctly
             # and run all Cypress tests
