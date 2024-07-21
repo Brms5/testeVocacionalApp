@@ -18,7 +18,7 @@ jobs:
               run: "ls -la"
             - name: "Install dependencies"
               run: "npm install"
-            - name: "lint"
+            - name: "Running Lint"
               run: "npm run lint"
 
     tests:
@@ -29,18 +29,17 @@ jobs:
 
             - name: "Set up environment variables"
               run: |
-                echo "Supabase Key: ${{ vars.SUPABASE_KEY }}"
-                echo "Supabase URL: ${{ vars.SUPABASE_URL }}"
+                echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
+                echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
 
-            #   env:
-            #     SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-            #     SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
+            - name: "Verify environment variables"
+              run: |
+                echo "Supabase URL: $SUPABASE_URL"
+                echo "Supabase Key: $SUPABASE_KEY"
 
-            # Install npm dependencies, cache them correctly
-            # and run all Cypress tests
             - name: "Install dependencies"
               run: "npm install"
-            - name: "tests"
+            - name: "Running Application tests"
               run: "npm run test"
                 
 
