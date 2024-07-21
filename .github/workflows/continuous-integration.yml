@@ -26,7 +26,7 @@ jobs:
             - name: "Set up environment variables"
               run: |
                 echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
-                echo "SUPABASE_KEY=${{ secrets.SUPABASE_SECRET_KEY }}" >> $GITHUB_ENV
+                echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
 
             # Install npm dependencies, cache them correctly
             # and run all Cypress tests
