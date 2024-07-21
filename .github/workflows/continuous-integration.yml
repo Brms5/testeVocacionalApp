@@ -29,8 +29,8 @@ jobs:
 
             - name: "Set up environment variables"
               run: |
-                echo "Supabase URL: ${{ vars.SUPABASE_URL }}"
                 echo "Supabase Key: ${{ vars.SUPABASE_KEY }}"
+                echo "Supabase URL: ${{ vars.SUPABASE_URL }}"
 
               env:
                 SUPABASE_URL: ${{ vars.SUPABASE_URL }}
