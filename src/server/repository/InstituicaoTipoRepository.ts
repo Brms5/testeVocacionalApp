@@ -1,11 +1,14 @@
 import { supabase } from "../infra/database/supabase";
-import { InstituicaoTipo, instituicaoTipoSchema } from "../schema/instituicaoTipo";
+import {
+    InstituicaoTipo,
+    instituicaoTipoSchema,
+} from "../schema/instituicaoTipo";
 
 async function findAll(): Promise<InstituicaoTipo[]> {
-    const {data, error} = await supabase
-        .from('Instituicao_tipo')
-        .select('*')
-        .order("nome", {ascending: true});
+    const { data, error } = await supabase
+        .from("Instituicao_tipo")
+        .select("*")
+        .order("nome", { ascending: true });
     if (error) {
         throw error;
     }
@@ -20,10 +23,10 @@ async function findAll(): Promise<InstituicaoTipo[]> {
 }
 
 async function findById(id: string): Promise<InstituicaoTipo> {
-    const {data, error} = await supabase
-        .from('Instituicao_tipo')
-        .select('*')
-        .eq('id', id)
+    const { data, error } = await supabase
+        .from("Instituicao_tipo")
+        .select("*")
+        .eq("id", id)
         .single();
     if (error) {
         throw error;
@@ -39,8 +42,8 @@ async function findById(id: string): Promise<InstituicaoTipo> {
 }
 
 async function save(nome: string): Promise<InstituicaoTipo> {
-    const {data, error} = await supabase
-        .from('Instituicao_tipo')
+    const { data, error } = await supabase
+        .from("Instituicao_tipo")
         .insert(nome)
         .select()
         .single();
