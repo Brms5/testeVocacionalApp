@@ -4,7 +4,6 @@ name: "[CI] Continuous Integration"
 on:
     pull_request:
         types: [opened, synchronize]
-    push:
             
 jobs:
     lint:
