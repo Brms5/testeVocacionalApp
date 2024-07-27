@@ -34,6 +34,9 @@ jobs:
             #     echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
             #     echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
 
+            - name: "Testando"
+              run: "echo Testando"
+
             - name: "Install dependencies"
               run: "npm install"
             - name: "Running Application tests"
