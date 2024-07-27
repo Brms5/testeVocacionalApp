@@ -1,22 +1,47 @@
 name: "[CI] Continuous Integration"
 
-# Sempre que tiver um commit ou um PR for aberto
 on:
-  pull_request:
-    types: [opened, synchronize]
+    pull_request:
+        types: [opened, synchronize]
 
-jobs: 
-  lint: 
-    runs-on: ubuntu-latest
-    steps:
-      ## [Common_CI_Steps]
-      - uses: actions/checkout@v3
-      ## =================
-      - name: "Debug"
-        run: |
-          ls -la
-          echo "Segundo comando de debug"
-      - name: "Install Dependencies"
-        run: "npm install"
-      - name: "Lint"
-        run: "npm run lint"
+env:
+    SUPABASE_URL: https://mtdaihiioltrzthvzjik.supabase.co
+    SUPABASE_SECRET_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10ZGFpaGlpb2x0cnp0aHZ6amlrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMDEwNjY0MSwiZXhwIjoyMDI1NjgyNjQxfQ.1iG3mwNhuRg_xCrLIElTuvRViuu7N0Y2pdC1hWQt9NA
+    # SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
+    # SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+            
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: "Debug"
+              run: "ls -la"
+            - name: "Install dependencies"
+              run: "npm install"
+            - name: "Running Lint"
+              run: "npm run lint"
+
+    tests:
+        runs-on: ubuntu-latest
+        container: cypress/browsers:node-20.14.0-chrome-126.0.6478.114-1-ff-127.0.1-edge-126.0.2592.61-1
+        steps:
+            - uses: actions/checkout@v4
+
+            # - name: "Set up environment variables"
+            #   run: |
+            #     echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
+            #     echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
+
+            - name: "Testando"
+              run: "echo Testando"
+
+            - name: "Install dependencies"
+              run: "npm install"
+            - name: "Running Application tests"
+              run: "npm run test"
+                
+
+
+            
