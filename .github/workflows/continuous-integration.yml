@@ -34,11 +34,6 @@ jobs:
             #     echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
             #     echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
 
-            # - name: "Verify environment variables"
-            #   run: |
-            #     echo "Supabase URL: $SUPABASE_URL"
-            #     echo "Supabase Key: $SUPABASE_KEY"
-
             - name: "Install dependencies"
               run: "npm install"
             - name: "Running Application tests"
