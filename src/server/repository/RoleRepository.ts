@@ -2,10 +2,10 @@ import { supabase } from "../infra/database/supabase";
 import { Role, roleSchema } from "../schema/role";
 
 async function findAll(): Promise<Role[]> {
-    const {data, error} = await supabase
-        .from('Role')
-        .select('*')
-        .order("nome", {ascending: true});
+    const { data, error } = await supabase
+        .from("Role")
+        .select("*")
+        .order("nome", { ascending: true });
     if (error) {
         throw error;
     }

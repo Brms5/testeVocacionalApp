@@ -1,4 +1,4 @@
 interface LoginCreate {
-  email: string;
-  senha: string;
+    email: string;
+    senha: string;
 }
