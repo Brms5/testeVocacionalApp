@@ -1,14 +1,14 @@
-import React from "react";        
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import Header from '@/ui/componentes/Header';
-import Footer from '@/ui/componentes/Footer';
-import { GlobalProvider } from '@/ui/context/GlobalContext';
-import { GoogleTagManager } from '@next/third-parties/google';
+import React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import Header from "@/ui/componentes/Header";
+import Footer from "@/ui/componentes/Footer";
+import { GlobalProvider } from "@/ui/context/GlobalContext";
+import { GoogleTagManager } from "@next/third-parties/google";
 
-const inter = Inter({ subsets: ['latin'] });
-const gtmTag = process.env.GTM_TAG || '';
+const inter = Inter({ subsets: ["latin"] });
+const gtmTag = process.env.GTM_TAG || "";
 
 export const metadata: Metadata = {
     title: "Domba App",
@@ -20,16 +20,16 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-  return (
-    <GlobalProvider>
-      <html lang="en">
-        <GoogleTagManager gtmId={gtmTag} />
-        <body className={inter.className}>
-          <Header />
-          {children}
-          {/* <Footer /> */}
-        </body>
-      </html>
-    </GlobalProvider>
-  );
+    return (
+        <GlobalProvider>
+            <html lang="en">
+                <GoogleTagManager gtmId={gtmTag} />
+                <body className={inter.className}>
+                    <Header />
+                    {children}
+                    {/* <Footer /> */}
+                </body>
+            </html>
+        </GlobalProvider>
+    );
 }
