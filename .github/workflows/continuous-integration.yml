@@ -5,8 +5,9 @@ on:
         types: [opened, synchronize]
 
 env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-    SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+    SUPABASE_URL: ${{ secrets.SUPABASE_URL }}co
             
 jobs:
     lint:
