@@ -25,13 +25,15 @@ jobs:
         runs-on: ubuntu-latest
         container: cypress/browsers:node-20.14.0-chrome-126.0.6478.114-1-ff-127.0.1-edge-126.0.2592.61-1
         steps:
-            # Verify if environment variables are set
-            - name: "Debug"
-              run: "echo $SUPABASE_KEY"
-            - name: "Debug"
-              run: "echo $SUPABASE_URL"
+            - name: Set up environment variables
+              run: |
+                echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
+                echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
 
-
+            - name: Use environment variables
+              run: |
+                echo "Using SUPABASE_KEY: $SUPABASE_KEY"
+                echo "Using SUPABASE_URL: $SUPABASE_URL"
 
             - uses: actions/checkout@v4
 
