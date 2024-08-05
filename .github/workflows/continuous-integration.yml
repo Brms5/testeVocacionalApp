@@ -5,8 +5,8 @@ on:
         types: [opened, synchronize]
 
 env:
-    SUPABASE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10ZGFpaGlpb2x0cnp0aHZ6amlrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMDEwNjY0MSwiZXhwIjoyMDI1NjgyNjQxfQ.1iG3mwNhuRg_xCrLIElTuvRViuu7N0Y2pdC1hWQt9NA
-    SUPABASE_URL: https://mtdaihiioltrzthvzjik.supabase.co
+    supabaseKey: ${{ secrets.SUPABASE_KEY }}
+    supabaseUrl: ${{ secrets.SUPABASE_URL }}
             
 jobs:
     lint:
@@ -25,6 +25,16 @@ jobs:
         runs-on: ubuntu-latest
         container: cypress/browsers:node-20.14.0-chrome-126.0.6478.114-1-ff-127.0.1-edge-126.0.2592.61-1
         steps:
+            - name: "Verify Environment Variables"
+              run: |
+                "echo $supabaseKey"
+                "echo $supabaseUrl"
+            
+            - name: "Seting up Environment Variables"
+              run: |
+                "export SUPABASE_KEY=$supabaseKey"
+                "export SUPABASE_URL=$supabaseUrl"
+
             - uses: actions/checkout@v4
 
             - name: "Install dependencies"
