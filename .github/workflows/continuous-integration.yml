@@ -5,8 +5,8 @@ on:
         types: [opened, synchronize]
 
 env:
-    SUPABASE_KEY: ${{ secrets.DATABASE_KEY }}
-    SUPABASE_URL: ${{ secrets.DATABASE_URL }}
+    SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+    SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
             
 jobs:
     lint:
