@@ -27,8 +27,8 @@ jobs:
         steps:
             - name: "Verify Environment Variables"
               run: |
-                "echo $supabaseKey"
-                "echo $supabaseUrl"
+                "echo $SUPABASE_KEY"
+                "echo $SUPABASE_URL"
             
             - name: "Seting up Environment Variables"
               run: |
