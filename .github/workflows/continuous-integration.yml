@@ -5,8 +5,8 @@ on:
         types: [opened, synchronize]
 
 env:
-    supabaseKey: ${{ secrets.SUPABASE_KEY }}
-    supabaseUrl: ${{ secrets.SUPABASE_URL }}
+    SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+    SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
             
 jobs:
     lint:
@@ -32,8 +32,8 @@ jobs:
             
             - name: "Seting up Environment Variables"
               run: |
-                "export SUPABASE_KEY=$supabaseKey"
-                "export SUPABASE_URL=$supabaseUrl"
+                "export SUPABASE_KEY=$SUPABASE_KEY"
+                "export SUPABASE_URL=$SUPABASE_URL"
 
             - uses: actions/checkout@v4
 
