@@ -5,8 +5,8 @@ on:
         types: [opened, synchronize]
 
 env:
-    SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-    SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+    SUPABASE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10ZGFpaGlpb2x0cnp0aHZ6amlrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMDEwNjY0MSwiZXhwIjoyMDI1NjgyNjQxfQ.1iG3mwNhuRg_xCrLIElTuvRViuu7N0Y2pdC1hWQt9NA
+    SUPABASE_URL: https://mtdaihiioltrzthvzjik.supabase.co
             
 jobs:
     lint:
