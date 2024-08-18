@@ -7,6 +7,7 @@ async function findAll(): Promise<CursoResponse[]> {
         .from("curso")
         .select("*")
         .order("nome");
+
     if (error) {
         throw error;
     }
@@ -74,6 +75,7 @@ async function save(cursoNome: string): Promise<CursoResponse | null> {
         .insert([{ nome: cursoNome }])
         .select()
         .single();
+
     if (error) {
         throw error;
     }
@@ -101,6 +103,7 @@ async function update(
         .eq("id", curso.id)
         .select()
         .single();
+
     if (error) {
         throw error;
     }

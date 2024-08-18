@@ -13,27 +13,23 @@ function createToken(usuario: Usuario): string {
     return token;
 }
 
-function verifyToken(token: string | null): boolean {
+function verifyToken(token: string | null): void {
     // verify if the token exists
     if (token === null) {
-        console.error("Token não encontrado.");
-        return false;
+        throw new Error("Token não encontrado.");
     }
 
     // verify if the token is valid
     jsonwebtoken.verify(token, "secret", (err: any) => {
         if (err) {
-            console.error("Token inválido.");
-            return false;
+            throw new Error("Token inválido.");
         }
     });
-
-    return true;
 }
 
 interface InfraSecurity {
     createToken: (usuario: Usuario) => string;
-    verifyToken: (token: string | null) => boolean;
+    verifyToken: (token: string | null) => void;
 }
 
 export const infraSecurity: InfraSecurity = {

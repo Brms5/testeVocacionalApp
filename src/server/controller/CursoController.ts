@@ -25,12 +25,9 @@ async function getCursoById(id: string): Promise<Response> {
 async function registerCurso(request: Request): Promise<Response> {
     const body: CursoRequest = await request.json();
     const cursoNome = body.nome;
-    const token = request.headers.get("Authorization");
 
-    const isTokenValid: boolean = infraSecurity.verifyToken(token);
-    if (!isTokenValid) {
-        return new Response("Token inválido", { status: 401 });
-    }
+    const token = request.headers.get("Authorization");
+    infraSecurity.verifyToken(token);
 
     if (!cursoNome) {
         return new Response("Faltando o nome do Curso.", {
@@ -64,11 +61,7 @@ async function updateCurso(request: Request): Promise<Response> {
     curso.edited_at = currentDate.toISOString();
 
     const token = request.headers.get("Authorization");
-
-    const isTokenValid: boolean = infraSecurity.verifyToken(token);
-    if (!isTokenValid) {
-        return new Response("Token inválido", { status: 401 });
-    }
+    infraSecurity.verifyToken(token);
 
     if (!curso.nome || !curso.id) {
         return new Response("Faltando o id e/ou nome do curso.", {
@@ -95,12 +88,9 @@ async function updateCurso(request: Request): Promise<Response> {
 async function deleteCurso(request: Request): Promise<Response> {
     const body: CursoRequest = await request.json();
     const cursoNome = body.nome;
-    const token = request.headers.get("Authorization");
 
-    const isTokenValid: boolean = infraSecurity.verifyToken(token);
-    if (!isTokenValid) {
-        return new Response("Token inválido", { status: 401 });
-    }
+    const token = request.headers.get("Authorization");
+    infraSecurity.verifyToken(token);
 
     if (!cursoNome) {
         return new Response("Faltando o nome do Curso.", {
