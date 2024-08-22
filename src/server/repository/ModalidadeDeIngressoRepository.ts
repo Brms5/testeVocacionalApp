@@ -6,7 +6,7 @@ import {
 
 async function findAll(): Promise<ModalidadeDeIngresso[]> {
     const { data, error } = await supabase
-        .from("Modalidade_de_ingresso")
+        .from("modalidade_de_ingresso")
         .select("*")
         .order("modalidade", { ascending: true });
     if (error) {
@@ -24,7 +24,7 @@ async function findAll(): Promise<ModalidadeDeIngresso[]> {
 
 async function findById(id: string): Promise<ModalidadeDeIngresso> {
     const { data, error } = await supabase
-        .from("Modalidade_de_ingresso")
+        .from("modalidade_de_ingresso")
         .select("*")
         .eq("id", id)
         .single();
@@ -45,7 +45,7 @@ async function findByInstituicaoId(
     instituicaoId: string
 ): Promise<ModalidadeDeIngresso[]> {
     const { data, error } = await supabase
-        .from("Modalidade_de_ingresso")
+        .from("modalidade_de_ingresso")
         .select("*")
         .eq("instituicao_id", instituicaoId);
     if (error) {
@@ -65,7 +65,7 @@ async function save(
     modalidadeDeIngresso: ModalidadeDeIngressoCreate
 ): Promise<ModalidadeDeIngresso> {
     const { data, error } = await supabase
-        .from("Modalidade_de_ingresso")
+        .from("modalidade_de_ingresso")
         .insert(modalidadeDeIngresso)
         .select()
         .single();
@@ -90,7 +90,7 @@ async function update(
     modalidadeDeIngresso.edited_at = currentDate.toISOString();
 
     const { data, error } = await supabase
-        .from("Modalidade_de_ingresso")
+        .from("modalidade_de_ingresso")
         .update(modalidadeDeIngresso)
         .eq("id", modalidadeDeIngresso.id)
         .select()
@@ -110,7 +110,7 @@ async function update(
 
 async function deleteById(id: string): Promise<void> {
     const { error } = await supabase
-        .from("Modalidade_de_ingresso")
+        .from("modalidade_de_ingresso")
         .delete()
         .eq("id", id);
     if (error) {
