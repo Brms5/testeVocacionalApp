@@ -195,6 +195,20 @@ function Header() {
                     <Box
                         sx={{
                             display: "flex",
+                            width: "400px",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Link href={"/informacoes"}>
+                            <Button fullWidth color="inherit">
+                                INFORMAÇÕES DO DOMBA
+                            </Button>
+                        </Link>
+                    </Box>
+
+                    <Box
+                        sx={{
+                            display: "flex",
                             width: "100px",
                             justifyContent: "center",
                         }}
