@@ -6,6 +6,7 @@ import Header from "@/ui/componentes/Header";
 import Footer from "@/ui/componentes/Footer";
 import { GlobalProvider } from "@/ui/context/GlobalContext";
 import { GoogleTagManager } from "@next/third-parties/google";
+import VLibrasFunction from "@/ui/componentes/VLibras";
 
 const inter = Inter({ subsets: ["latin"] });
 const gtmTag = process.env.GTM_TAG || "";
@@ -26,6 +27,7 @@ export default function RootLayout({
                 <GoogleTagManager gtmId={gtmTag} />
                 <body className={inter.className}>
                     <Header />
+                    <VLibrasFunction />
                     {children}
                     {/* <Footer /> */}
                 </body>
