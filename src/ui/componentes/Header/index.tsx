@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect } from "react";
-import { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -14,30 +13,26 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Link from "next/link";
 import { GlobalContext } from "@/ui/context/GlobalContext";
-
 import { jwtDecode } from "jwt-decode";
 
-const pages = ["Página Principal", "Instituições"];
+const pages = ["Página Principal", "Instituições", "INFORMAÇÕES DO DOMBA"];
 
 function Header() {
     const { token, setToken } = useContext(GlobalContext);
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
     useEffect(() => {
-        setToken(localStorage.getItem("token"));
+        const savedToken = localStorage.getItem("token");
+        setToken(savedToken);
 
-        if (!token) {
-            localStorage.removeItem("token");
-            return;
+        if (savedToken) {
+            const decodedToken: any = jwtDecode(savedToken);
+            const currentTime = Date.now() / 1000;
+            if (decodedToken.exp < currentTime) {
+                localStorage.removeItem("token");
+            }
         }
-
-        const decodedToken: any = jwtDecode(token);
-        const currentTime = Date.now() / 1000;
-        if (decodedToken.exp < currentTime) {
-            // Token has expired
-            localStorage.removeItem("token"); // Remove the expired token
-        }
-    }, [token]);
+    }, [token, setToken]);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -55,13 +50,11 @@ function Header() {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" elevation={0}> {/* Removendo o sombreado */}
             <Container>
                 <Toolbar disableGutters>
-                    {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
                     <Typography
                         variant="h6"
-                        noWrap
                         component="a"
                         href="/"
                         sx={{
@@ -77,17 +70,11 @@ function Header() {
                         DOMBA
                     </Typography>
 
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            display: { xs: "flex", md: "none" },
-                        }}
-                    >
+                    <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                         <IconButton
                             size="large"
-                            aria-label="account of current user"
+                            aria-label="menu"
                             aria-controls="menu-appbar"
-                            aria-haspopup="true"
                             onClick={handleOpenNavMenu}
                             color="inherit"
                         >
@@ -96,54 +83,26 @@ function Header() {
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "center",
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "center",
-                            }}
+                            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                            transformOrigin={{ vertical: "top", horizontal: "center" }}
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: "block", md: "none" },
-                            }}
                         >
                             {pages.map((page) => (
-                                <div
-                                    key={page}
-                                    className="flex w-screen justify-center"
-                                >
+                                <MenuItem key={page} onClick={handleCloseNavMenu}>
                                     <Link
-                                        href={
-                                            page == "Página Principal"
-                                                ? "/"
-                                                : "/instituicoes"
-                                        }
+                                        href={page === "Página Principal" ? "/" : page === "Instituições" ? "/instituicoes" : "/informacoes"}
+                                        style={{ textDecoration: "none", width: "100%" }}
                                     >
-                                        <MenuItem
-                                            onClick={handleCloseNavMenu}
-                                            style={{
-                                                display: "flex",
-                                                width: "90%",
-                                                justifyContent: "center",
-                                            }}
-                                        >
-                                            <Typography textAlign="center">
-                                                {page}
-                                            </Typography>
-                                        </MenuItem>
+                                        <Typography textAlign="center">{page}</Typography>
                                     </Link>
-                                </div>
+                                </MenuItem>
                             ))}
                         </Menu>
                     </Box>
-                    {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
+
                     <Typography
                         variant="h5"
-                        noWrap
                         component="a"
                         href="/"
                         sx={{
@@ -159,31 +118,23 @@ function Header() {
                     >
                         DOMBA
                     </Typography>
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            display: { xs: "none", md: "flex" },
-                        }}
-                    >
+
+                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
                         {pages.map((page) => (
                             <Link
                                 key={page}
-                                href={
-                                    page == "Página Principal"
-                                        ? "/"
-                                        : "/instituicoes"
-                                }
-                                style={{
-                                    textDecoration: "none",
-                                    width: "200px",
-                                }}
+                                href={page === "Página Principal" ? "/" : page === "Instituições" ? "/instituicoes" : "/informacoes"}
+                                style={{ textDecoration: "none", margin: '0 20px' }} // Aumentei o espaçamento
                             >
                                 <Button
                                     onClick={handleCloseNavMenu}
                                     sx={{
                                         my: 2,
                                         color: "white",
-                                        display: "block",
+                                        fontWeight: 600, // Peso da fonte ajustado
+                                        "&:hover": {
+                                            color: "#172554", // Cor ao passar o mouse
+                                        },
                                     }}
                                 >
                                     {page}
@@ -192,32 +143,19 @@ function Header() {
                         ))}
                     </Box>
 
-                    <Box
-                        sx={{
-                            display: "flex",
-                            width: "400px",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <Link href={"/informacoes"}>
-                            <Button fullWidth color="inherit">
-                                INFORMAÇÕES DO DOMBA
-                            </Button>
-                        </Link>
-                    </Box>
-
-                    <Box
-                        sx={{
-                            display: "flex",
-                            width: "100px",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <Link href={"/login"}>
+                    <Box sx={{ display: "flex", justifyContent: "center", width: "100px" }}>
+                        <Link href="/login">
                             <Button
                                 fullWidth
-                                color="inherit"
-                                onClick={() => handleLoginButton()}
+                                sx={{
+                                    my: 2,
+                                    color: "white",
+                                    fontWeight: 600, // Peso da fonte ajustado
+                                    "&:hover": {
+                                        color: "#172554", // Cor ao passar o mouse
+                                    },
+                                }}
+                                onClick={handleLoginButton}
                             >
                                 {token ? "SAIR" : "ENTRAR"}
                             </Button>
@@ -230,3 +168,6 @@ function Header() {
 }
 
 export default Header;
+
+
+
