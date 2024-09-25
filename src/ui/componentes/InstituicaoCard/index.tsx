@@ -15,13 +15,13 @@ function InstituicaoCard({ nome, imagem }: InputInstituicaoCard) {
     return (
         <Card
             sx={{
-                width: 250,  // Largura reduzida
+                width: 250, // Largura reduzida
                 height: 200, // Altura reduzida
-                borderRadius: "12px", 
-                boxShadow: 2, 
-                overflow: "hidden", 
-                transition: "transform 0.3s", 
-                '&:hover': {
+                borderRadius: "12px",
+                boxShadow: 2,
+                overflow: "hidden",
+                transition: "transform 0.3s",
+                "&:hover": {
                     transform: "scale(1.25)",
                 },
                 margin: "16px 0", // Distância vertical entre os cards
@@ -45,4 +45,3 @@ function InstituicaoCard({ nome, imagem }: InputInstituicaoCard) {
 }
 
 export default InstituicaoCard;
-

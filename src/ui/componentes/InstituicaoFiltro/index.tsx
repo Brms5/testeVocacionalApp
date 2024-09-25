@@ -75,57 +75,59 @@ function InstituicaoFiltro() {
                     sx={{
                         width: { xs: 350, sm: 500, md: 700 },
                         maxWidth: "100%",
-                        borderRadius: "50px", 
+                        borderRadius: "50px",
                         display: "flex",
                         color: "white",
                         padding: "10px",
                     }}
                 >
-                        {instituicaoTipo && (
-                            <TextField
-                                id="outlined-controlled"
-                                variant="filled"
-                                label="Instituição"
-                                value={instituicaoNome}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                    setInstituicaoNome(event.target.value);
-                                }}
-                                fullWidth
-                                color="primary"
-                                sx={{
+                    {instituicaoTipo && (
+                        <TextField
+                            id="outlined-controlled"
+                            variant="filled"
+                            label="Instituição"
+                            value={instituicaoNome}
+                            onChange={(
+                                event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                setInstituicaoNome(event.target.value);
+                            }}
+                            fullWidth
+                            color="primary"
+                            sx={{
+                                borderRadius: "16px",
+                                backgroundColor: "#f0f0f0",
+                                "& .MuiFilledInput-root": {
                                     borderRadius: "16px",
+                                    border: "none",
                                     backgroundColor: "#f0f0f0",
-                                    '& .MuiFilledInput-root': {
-                                        borderRadius: "16px",
-                                        border: "none",
-                                        backgroundColor: "#f0f0f0",
-                                        '&:before, &:after': {
-                                            display: 'none',
-                                        },
-                                        '&:hover': {
-                                            backgroundColor: "#e0e0e0",
-                                        },
-                                        '&.Mui-focused': {
-                                            backgroundColor: "#e0e0e0",
-                                            boxShadow: '0 0 0 4px rgba(0, 0, 0, 0.2)',
-                                        },
+                                    "&:before, &:after": {
+                                        display: "none",
                                     },
-                                    '& .MuiInputLabel-root': {
-                                        color: "rgba(0, 0, 0, 0.6)", 
-                                        '&.Mui-focused': {
-                                            color: "#1976d2", // Cor ao focar
-                                        },
-                                    },
-                                    '& .MuiFilledInput-root:hover': {
+                                    "&:hover": {
                                         backgroundColor: "#e0e0e0",
                                     },
-                                    '& .MuiFilledInput-root.Mui-error': {
-                                        backgroundColor: "#ffebee", // Cor para erro
+                                    "&.Mui-focused": {
+                                        backgroundColor: "#e0e0e0",
+                                        boxShadow:
+                                            "0 0 0 4px rgba(0, 0, 0, 0.2)",
                                     },
-                                }}
-                            />
-                        )}
-
+                                },
+                                "& .MuiInputLabel-root": {
+                                    color: "rgba(0, 0, 0, 0.6)",
+                                    "&.Mui-focused": {
+                                        color: "#1976d2", // Cor ao focar
+                                    },
+                                },
+                                "& .MuiFilledInput-root:hover": {
+                                    backgroundColor: "#e0e0e0",
+                                },
+                                "& .MuiFilledInput-root.Mui-error": {
+                                    backgroundColor: "#ffebee", // Cor para erro
+                                },
+                            }}
+                        />
+                    )}
                 </Box>
             </div>
         </>

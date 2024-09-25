@@ -50,7 +50,9 @@ function Header() {
     };
 
     return (
-        <AppBar position="static" elevation={0}> {/* Removendo o sombreado */}
+        <AppBar position="static" elevation={0}>
+            {" "}
+            {/* Removendo o sombreado */}
             <Container>
                 <Toolbar disableGutters>
                     <Typography
@@ -70,7 +72,12 @@ function Header() {
                         DOMBA
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            display: { xs: "flex", md: "none" },
+                        }}
+                    >
                         <IconButton
                             size="large"
                             aria-label="menu"
@@ -83,18 +90,38 @@ function Header() {
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorElNav}
-                            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                            transformOrigin={{ vertical: "top", horizontal: "center" }}
+                            anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "center",
+                            }}
+                            transformOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                            }}
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem
+                                    key={page}
+                                    onClick={handleCloseNavMenu}
+                                >
                                     <Link
-                                        href={page === "Página Principal" ? "/" : page === "Instituições" ? "/instituicoes" : "/informacoes"}
-                                        style={{ textDecoration: "none", width: "100%" }}
+                                        href={
+                                            page === "Página Principal"
+                                                ? "/"
+                                                : page === "Instituições"
+                                                ? "/instituicoes"
+                                                : "/informacoes"
+                                        }
+                                        style={{
+                                            textDecoration: "none",
+                                            width: "100%",
+                                        }}
                                     >
-                                        <Typography textAlign="center">{page}</Typography>
+                                        <Typography textAlign="center">
+                                            {page}
+                                        </Typography>
                                     </Link>
                                 </MenuItem>
                             ))}
@@ -119,12 +146,27 @@ function Header() {
                         DOMBA
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            display: { xs: "none", md: "flex" },
+                            justifyContent: "center",
+                        }}
+                    >
                         {pages.map((page) => (
                             <Link
                                 key={page}
-                                href={page === "Página Principal" ? "/" : page === "Instituições" ? "/instituicoes" : "/informacoes"}
-                                style={{ textDecoration: "none", margin: '0 20px' }} // Aumentei o espaçamento
+                                href={
+                                    page === "Página Principal"
+                                        ? "/"
+                                        : page === "Instituições"
+                                        ? "/instituicoes"
+                                        : "/informacoes"
+                                }
+                                style={{
+                                    textDecoration: "none",
+                                    margin: "0 20px",
+                                }} // Aumentei o espaçamento
                             >
                                 <Button
                                     onClick={handleCloseNavMenu}
@@ -143,7 +185,13 @@ function Header() {
                         ))}
                     </Box>
 
-                    <Box sx={{ display: "flex", justifyContent: "center", width: "100px" }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            width: "100px",
+                        }}
+                    >
                         <Link href="/login">
                             <Button
                                 fullWidth
@@ -168,6 +216,3 @@ function Header() {
 }
 
 export default Header;
-
-
-
