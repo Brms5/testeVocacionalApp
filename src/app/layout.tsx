@@ -25,7 +25,10 @@ export default function RootLayout({
         <GlobalProvider>
             <html lang="en">
                 <GoogleTagManager gtmId={gtmTag} />
-                <body className={inter.className}>
+                <body
+                    className={inter.className}
+                    //style={{ backgroundColor: '#60a5fa', margin: 0 }} muda a cor do fundo
+                >
                     <Header />
                     <VLibrasFunction />
                     {children}

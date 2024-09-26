@@ -13,29 +13,31 @@ interface InputInstituicaoCard {
 
 function InstituicaoCard({ nome, imagem }: InputInstituicaoCard) {
     return (
-        <Card sx={{ width: 350, height: 220 }}>
-            <CardActionArea sx={{ width: 350, height: 220 }}>
+        <Card
+            sx={{
+                width: 250, // Largura reduzida
+                height: 200, // Altura reduzida
+                borderRadius: "12px",
+                boxShadow: 2,
+                overflow: "hidden",
+                transition: "transform 0.3s",
+                "&:hover": {
+                    transform: "scale(1.25)",
+                },
+                margin: "16px 0", // Distância vertical entre os cards
+            }}
+        >
+            <CardActionArea sx={{ height: "100%" }}>
                 <Link href={`/instituicoes/${nome}`}>
                     <CardMedia
                         component="img"
-                        height="220"
-                        width="330"
+                        height="150" // Altura da imagem reduzida
                         image={imagem}
                         alt={nome}
-                        // style={{ height: "200", width: "350" }}
+                        sx={{
+                            objectFit: "cover",
+                        }}
                     />
-                    {/* <img 
-          src={imagem} 
-          alt={nome} 
-          width={350}
-          height={200}
-          // style={{ height: "200", width: "350" }}
-        /> */}
-                    {/* <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {nome}
-          </Typography>
-        </CardContent> */}
                 </Link>
             </CardActionArea>
         </Card>
