@@ -34,15 +34,6 @@ function Home() {
                 </div>
             </section>
             <section className="p-8">
-                <div className="w-full bg-blue-950 text-center text-xl p-4 rounded-lg items-center">
-                    <h1 className="">Cardápio semanal da merenda</h1>
-                    <iframe
-                        className="w-full h-full p-2"
-                        src="https://docs.google.com/spreadsheets/d/1YD-Poyx1kSAGCJCkzMTdvZtBv3Jgd6BNzOMRGxGEHSc/pubhtml?gid=0&amp;single=false&amp;widget=false&amp;headers=false&amp;chrome=false"
-                    ></iframe>
-                </div>
-            </section>
-            <section className="p-8">
                 <div className="w-full bg-blue-950 text-center text-xl p-4 h-96 rounded-lg">
                     <h1>Calendário Acadêmico Anual 2024</h1>
                     <iframe
