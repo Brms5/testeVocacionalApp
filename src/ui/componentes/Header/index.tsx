@@ -15,7 +15,7 @@ import Link from "next/link";
 import { GlobalContext } from "@/ui/context/GlobalContext";
 import { jwtDecode } from "jwt-decode";
 
-const pages = ["Página Principal", "Instituições", "INFORMAÇÕES DO DOMBA"];
+const pages = ["Página Principal", "Instituições"];
 
 function Header() {
     const { token, setToken } = useContext(GlobalContext);

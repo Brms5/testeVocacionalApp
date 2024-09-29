@@ -19,23 +19,26 @@ function Home() {
                 </div>
                 <div className="w-full lg:max-w-96 p-8">
                     <div className="pb-4">
-                        <h1 className="text-2xl text-center lg:text-left pb-4">
-                            Portal voltado aos estudantes da Escola Estadual Dom
-                            Barreto.
+                        <h1 className="text-3xl text-center lg:text-left pb-4">
+                            Portal para Estudantes da Escola Estadual Dom
+                            Barreto
                         </h1>
                         <p>
-                            Desenvolvido pelos docentes da Escola Estadual Dom
-                            Barreto, a plataforma visa facilitar o acesso dos
-                            estudantes às informações relacionadas a
-                            vestibulares, cursos técnicos, cursinhos populares,
-                            eventos, entre outros.
+                            Desenvolvido pelos professores da Escola Estadual
+                            Dom Barreto, este portal foi criado para facilitar o
+                            acesso dos alunos a informações sobre vestibulares,
+                            cursos técnicos, cursinhos, eventos e muito mais.
+                            Nossa plataforma visa apoiar o desenvolvimento
+                            acadêmico e auxiliar na trajetória educacional dos
+                            estudantes, reunindo recursos valiosos em um só
+                            lugar.
                         </p>
                     </div>
                 </div>
             </section>
             <section className="p-8">
                 <div className="w-full bg-blue-950 text-center text-xl p-4 h-96 rounded-lg">
-                    <h1>Calendário Acadêmico Anual 2024</h1>
+                    <h1>Calendário Acadêmico Anual</h1>
                     <iframe
                         className="w-full mx-auto p-4 h-full mb-4"
                         src="https://docs.google.com/spreadsheets/d/1sOX0mNJnJnmxORCKSBItoGoQfB9PZFqG/pubhtml?gid=1057522154&amp;single=false&amp;widget=false&amp;headers=false&amp;chrome=false"
