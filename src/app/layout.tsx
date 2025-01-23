@@ -29,7 +29,7 @@ export default function RootLayout({
                     className={inter.className}
                     //style={{ backgroundColor: '#60a5fa', margin: 0 }} muda a cor do fundo
                 >
-                    <Header />
+                    {/* <Header /> */}
                     <VLibrasFunction />
                     {children}
                     {/* <Footer /> */}
