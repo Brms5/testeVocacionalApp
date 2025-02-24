@@ -1,19 +1,27 @@
 "use client";
 
 import * as React from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import MenuItem from "@mui/material/MenuItem";
+import {
+    Button,
+    TextField,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    MenuItem,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormControl,
+    FormLabel,
+} from "@mui/material";
 
 interface personData {
     name: string;
     gender: string;
     age: string | number;
+    answers: { [key: string]: string };
 }
 
 export default function MultiStepDialog() {
@@ -23,6 +31,7 @@ export default function MultiStepDialog() {
         name: "",
         gender: "",
         age: "",
+        answers: {},
     });
 
     const handleClickOpen = () => {
@@ -31,8 +40,8 @@ export default function MultiStepDialog() {
 
     const handleClose = () => {
         setOpen(false);
-        setStep(1); // Reset to the first step
-        setPersonData({ name: "", gender: "", age: "" }); // Clear form data
+        setStep(1);
+        setPersonData({ name: "", gender: "", age: "", answers: {} });
     };
 
     const handleNext = (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,19 +52,31 @@ export default function MultiStepDialog() {
         setPersonData((prevData) => ({
             ...prevData,
             ...updatedData,
-            age: updatedData.age ? Number(updatedData.age) : "", // Convert age to number
+            age: updatedData.age ? Number(updatedData.age) : "",
         }));
 
-        if (step < 3) {
+        if (step < 2) {
             setStep((prevStep) => prevStep + 1);
         } else {
-            console.log("Final data:", {
-                ...personData,
-                age: updatedData.age ? Number(updatedData.age) : "",
-            });
+            console.log("Final data:", personData);
             handleClose();
         }
     };
+
+    const handleAnswerChange = (question: string, value: string) => {
+        setPersonData((prevData) => ({
+            ...prevData,
+            answers: { ...prevData.answers, [question]: value },
+        }));
+    };
+
+    const questions = [
+        { id: "q1", text: "Prefere trabalhar em equipe ou sozinho?" },
+        { id: "q2", text: "Gosta mais de exatas ou humanas?" },
+        { id: "q3", text: "Prefere ambientes dinâmicos ou estruturados?" },
+        { id: "q4", text: "Se sente mais confortável liderando ou seguindo?" },
+        { id: "q5", text: "Gosta de resolver problemas técnicos?" },
+    ];
 
     const renderDialogContent = () => {
         switch (step) {
@@ -79,17 +100,10 @@ export default function MultiStepDialog() {
                                 fullWidth
                                 variant="standard"
                                 defaultValue={personData.name}
+                                style={{ marginBottom: "2rem" }}
                             />
-                        </DialogContent>
-                    </>
-                );
-            case 2:
-                return (
-                    <>
-                        <DialogTitle>Selecione o gênero</DialogTitle>
-                        <DialogContent>
                             <DialogContentText>
-                                Informe seu gênero.
+                                Agora informe seu gênero.
                             </DialogContentText>
                             <TextField
                                 select
@@ -101,24 +115,16 @@ export default function MultiStepDialog() {
                                 fullWidth
                                 variant="standard"
                                 defaultValue={personData.gender}
+                                style={{ marginBottom: "2rem" }}
                             >
                                 <MenuItem value="male">Masculino</MenuItem>
                                 <MenuItem value="female">Feminino</MenuItem>
                                 <MenuItem value="other">Outro</MenuItem>
                             </TextField>
-                        </DialogContent>
-                    </>
-                );
-            case 3:
-                return (
-                    <>
-                        <DialogTitle>Informe sua idade</DialogTitle>
-                        <DialogContent>
                             <DialogContentText>
-                                Por favor, informe sua idade.
+                                E, por fim, informe sua idade.
                             </DialogContentText>
                             <TextField
-                                autoFocus
                                 required
                                 margin="dense"
                                 id="age"
@@ -129,6 +135,52 @@ export default function MultiStepDialog() {
                                 variant="standard"
                                 defaultValue={personData.age}
                             />
+                        </DialogContent>
+                    </>
+                );
+            case 2:
+                return (
+                    <>
+                        <DialogTitle>Teste vocacional</DialogTitle>
+                        <DialogContent
+                            dividers
+                            style={{ maxHeight: "400px", overflowY: "auto" }}
+                        >
+                            {questions.map((question) => (
+                                <FormControl
+                                    key={question.id}
+                                    component="fieldset"
+                                    style={{ marginBottom: "1.5rem" }}
+                                >
+                                    <FormLabel component="legend">
+                                        {question.text}
+                                    </FormLabel>
+                                    <RadioGroup
+                                        name={question.id}
+                                        value={
+                                            personData.answers[question.id] ||
+                                            ""
+                                        }
+                                        onChange={(event) =>
+                                            handleAnswerChange(
+                                                question.id,
+                                                event.target.value
+                                            )
+                                        }
+                                    >
+                                        <FormControlLabel
+                                            value="option1"
+                                            control={<Radio />}
+                                            label="Opção 1"
+                                        />
+                                        <FormControlLabel
+                                            value="option2"
+                                            control={<Radio />}
+                                            label="Opção 2"
+                                        />
+                                    </RadioGroup>
+                                </FormControl>
+                            ))}
                         </DialogContent>
                     </>
                 );
@@ -160,7 +212,7 @@ export default function MultiStepDialog() {
                         </Button>
                     )}
                     <Button type="submit">
-                        {step === 3 ? "Finalizar" : "Avançar"}
+                        {step === 2 ? "Finalizar" : "Avançar"}
                     </Button>
                 </DialogActions>
             </Dialog>
