@@ -1,4 +1,4 @@
-import { infraSecurity } from "../infra/security/auth";
+// import { infraSecurity } from "../infra/security/auth";
 import { instituicaoRepository } from "../repository/InstituicaoRepository";
 
 async function getAllInstituicoes(request: Request) {
@@ -45,7 +45,7 @@ async function registerInstituicao(request: Request) {
         return new Response("Token não encontrado.", { status: 401 });
     }
 
-    infraSecurity.verifyToken(token);
+    // infraSecurity.verifyToken(token);
 
     if (!instituicao.nome) {
         return new Response("Faltando o nome da Instituicao.", { status: 400 });
@@ -73,7 +73,7 @@ async function updateInstituicao(request: Request) {
         return new Response("Token não encontrado.", { status: 401 });
     }
 
-    infraSecurity.verifyToken(token);
+    // infraSecurity.verifyToken(token);
 
     const instituicaoExiste = await instituicaoRepository.findById(
         instituicao.id
@@ -106,7 +106,7 @@ async function deleteInstituicao(request: Request) {
         return new Response("Token não encontrado.", { status: 401 });
     }
 
-    await infraSecurity.verifyToken(token);
+    // await infraSecurity.verifyToken(token);
 
     const { nome } = body;
 
