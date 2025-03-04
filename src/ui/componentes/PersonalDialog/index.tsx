@@ -16,6 +16,8 @@ import {
     FormControl,
     FormLabel,
 } from "@mui/material";
+import { questaoService } from "@/client/services/Questao";
+import { useEffect } from "react";
 
 interface personData {
     name: string;
@@ -33,8 +35,30 @@ export default function MultiStepDialog() {
         age: "",
         answers: {},
     });
+    const [questoes, setQuestoes] = React.useState<Questao[]>();
+
+    useEffect(() => {
+        questaoService
+            .getAllQuestao()
+            .then((response) => {
+                setQuestoes(response);
+            })
+            .catch((error) => {
+                console.log("Erro ao buscar questões:", error);
+            });
+    }, []);
 
     const handleClickOpen = () => {
+        if (questoes === undefined) {
+            questaoService
+                .getAllQuestao()
+                .then((response) => {
+                    setQuestoes(response);
+                })
+                .catch((error) => {
+                    console.log("Erro ao buscar questões:", error);
+                });
+        }
         setOpen(true);
     };
 
@@ -46,6 +70,11 @@ export default function MultiStepDialog() {
 
     const handleNext = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        if (questoes === undefined) {
+            return;
+        }
+
         const newFormData = new FormData(event.currentTarget);
         const updatedData = Object.fromEntries(newFormData.entries());
 
@@ -58,7 +87,6 @@ export default function MultiStepDialog() {
         if (step < 2) {
             setStep((prevStep) => prevStep + 1);
         } else {
-            console.log("Final data:", personData);
             handleClose();
         }
     };
@@ -70,13 +98,11 @@ export default function MultiStepDialog() {
         }));
     };
 
-    const questions = [
-        { id: "q1", text: "Prefere trabalhar em equipe ou sozinho?" },
-        { id: "q2", text: "Gosta mais de exatas ou humanas?" },
-        { id: "q3", text: "Prefere ambientes dinâmicos ou estruturados?" },
-        { id: "q4", text: "Se sente mais confortável liderando ou seguindo?" },
-        { id: "q5", text: "Gosta de resolver problemas técnicos?" },
-    ];
+    const isAllAnswered = () => {
+        return questoes?.every(
+            (question) => personData.answers[question.questao_nome]
+        );
+    };
 
     const renderDialogContent = () => {
         switch (step) {
@@ -146,41 +172,63 @@ export default function MultiStepDialog() {
                             dividers
                             style={{ maxHeight: "400px", overflowY: "auto" }}
                         >
-                            {questions.map((question) => (
-                                <FormControl
-                                    key={question.id}
-                                    component="fieldset"
-                                    style={{ marginBottom: "1.5rem" }}
-                                >
-                                    <FormLabel component="legend">
-                                        {question.text}
-                                    </FormLabel>
-                                    <RadioGroup
-                                        name={question.id}
-                                        value={
-                                            personData.answers[question.id] ||
-                                            ""
-                                        }
-                                        onChange={(event) =>
-                                            handleAnswerChange(
-                                                question.id,
-                                                event.target.value
-                                            )
-                                        }
+                            {questoes &&
+                                questoes.map((question) => (
+                                    <FormControl
+                                        key={question.id}
+                                        component="fieldset"
+                                        fullWidth
+                                        style={{ marginBottom: "1.5rem" }}
                                     >
-                                        <FormControlLabel
-                                            value="option1"
-                                            control={<Radio />}
-                                            label="Opção 1"
-                                        />
-                                        <FormControlLabel
-                                            value="option2"
-                                            control={<Radio />}
-                                            label="Opção 2"
-                                        />
-                                    </RadioGroup>
-                                </FormControl>
-                            ))}
+                                        <FormLabel
+                                            component="legend"
+                                            style={{ display: "block" }}
+                                        >
+                                            {question.questao_nome}
+                                        </FormLabel>
+                                        <RadioGroup
+                                            name={question.id}
+                                            style={{ width: "100%" }} // Garante que cada grupo fique em uma linha
+                                            value={
+                                                personData.answers[
+                                                    question.questao_nome
+                                                ] || ""
+                                            }
+                                            onChange={(event) =>
+                                                handleAnswerChange(
+                                                    question.questao_nome,
+                                                    event.target.value
+                                                )
+                                            }
+                                        >
+                                            <FormControlLabel
+                                                value="0"
+                                                control={<Radio />}
+                                                label="Odeio"
+                                            />
+                                            <FormControlLabel
+                                                value="1"
+                                                control={<Radio />}
+                                                label="Não gosto"
+                                            />
+                                            <FormControlLabel
+                                                value="2"
+                                                control={<Radio />}
+                                                label="Não tenho preferência"
+                                            />
+                                            <FormControlLabel
+                                                value="3"
+                                                control={<Radio />}
+                                                label="Gosto"
+                                            />
+                                            <FormControlLabel
+                                                value="4"
+                                                control={<Radio />}
+                                                label="Adoro"
+                                            />
+                                        </RadioGroup>
+                                    </FormControl>
+                                ))}
                         </DialogContent>
                     </>
                 );
@@ -211,7 +259,10 @@ export default function MultiStepDialog() {
                             Voltar
                         </Button>
                     )}
-                    <Button type="submit">
+                    <Button
+                        type="submit"
+                        disabled={step === 2 && !isAllAnswered()}
+                    >
                         {step === 2 ? "Finalizar" : "Avançar"}
                     </Button>
                 </DialogActions>
