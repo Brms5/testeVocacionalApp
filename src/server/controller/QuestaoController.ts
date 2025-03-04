@@ -1,8 +1,15 @@
 import { questaoRepository } from "../repository/QuestaoRepository";
 
 async function getAllQuestoes(request: Request) {
-    console.log("Questao Controller - getAllQuestoes");
-    const questoes = await questaoRepository.findAll();
+    const response = await questaoRepository.findAll();
+    const questoes = response.map((questao) => {
+        return {
+            id: questao.id,
+            questao_nome: questao.questao_nome,
+            questao_categoria: questao.questao_categoria,
+        };
+    });
+
     return new Response(JSON.stringify(questoes), { status: 200 });
 }
 

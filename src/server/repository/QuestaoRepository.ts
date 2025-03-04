@@ -2,7 +2,6 @@ import { supabase } from "../infra/database/supabase";
 import { Questao, questaoSchema } from "../schema/Questao";
 
 async function findAll(): Promise<Questao[]> {
-    console.log("Questao Repository - getAllQuestoes");
     const { data, error } = await supabase.from("questao").select("*");
     if (error) {
         throw error;
