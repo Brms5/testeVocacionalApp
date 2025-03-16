@@ -12,9 +12,7 @@ async function findAll(): Promise<Questao[]> {
         throw new Error(parsedData.error.errors[0].message);
     }
 
-    const questoes = parsedData.data;
-    console.log("QUESTOES", questoes);
-    return questoes;
+    return parsedData.data;
 }
 
 interface QuestaoRepository {

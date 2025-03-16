@@ -3,8 +3,6 @@ export interface GlobalContextProps {
 }
 
 export interface GlobalContextData {
-    instituicoes: Instituicao[];
-    setInstituicoes: (instituicao: Instituicao[]) => void;
     token: string | null;
     setToken: (token: string | null) => void;
 }
