@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { questaoService } from "@/client/services/Questao";
 import { useEffect } from "react";
+import { resultadoRiasecService } from "@/client/services/ResultadoRiasec";
 
 interface personData {
     answers: { [key: string]: string };
@@ -40,6 +41,7 @@ export default function MultiStepDialog() {
         answers: {},
     });
     const [questoes, setQuestoes] = React.useState<Questao[]>();
+    const [userResult, setUserResult] = React.useState<ResultadoRiasec[]>();
 
     useEffect(() => {
         questaoService
@@ -63,14 +65,12 @@ export default function MultiStepDialog() {
                     console.log("Erro ao buscar questões:", error);
                 });
         }
-        console.log("Questoes: ", questoes);
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
         setPersonData({ answers: {} });
-        console.log(personData);
     };
 
     const handleNext = (event: React.FormEvent<HTMLFormElement>) => {
@@ -108,7 +108,7 @@ export default function MultiStepDialog() {
     const riasecResult = (
         answers: { [key: string]: string },
         questoes: { questao_nome: string; questao_categoria: RiasecCategory }[]
-    ) => {
+    ): void => {
         const result: Record<RiasecCategory, number> = {
             Realista: 0,
             Investigativo: 0,
@@ -126,8 +126,24 @@ export default function MultiStepDialog() {
             });
         }
 
-        console.log("Resultado: ", result);
-        return result;
+        // Relacionar quais categorias são mais fortes
+        const sortedResult = Object.entries(result).sort(
+            ([, valueA], [, valueB]) => valueB - valueA
+        );
+
+        // Mostrar a categoria mais forte e em caso de empate, mostrar todas
+        const strongestCategory = sortedResult.filter(
+            ([, value]) => value === sortedResult[0][1]
+        );
+
+        resultadoRiasecService
+            .getResultadosRiasecByCategoria(
+                strongestCategory.map(([category]) => category)
+            )
+            .then((response) => {
+                setUserResult(response);
+                console.log("RESULTADO: ", response);
+            });
     };
 
     const renderDialogContent = () => {
