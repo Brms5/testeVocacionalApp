@@ -12,104 +12,95 @@ import {
     FormControlLabel,
     FormControl,
     FormLabel,
+    Box,
+    Typography,
 } from "@mui/material";
+import { borderColor, styled } from "@mui/system";
 import { questaoService } from "@/client/services/Questao";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { resultadoRiasecService } from "@/client/services/ResultadoRiasec";
 
-interface personData {
-    answers: { [key: string]: string };
-}
+const CustomDialog = styled(Dialog)({
+    ".MuiPaper-root": {
+        borderRadius: "20px",
+        overflow: "hidden",
+        boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)",
+    },
+});
 
-type RiasecCategory =
-    | "Realista"
-    | "Investigativo"
-    | "Artístico"
-    | "Social"
-    | "Empreendedor"
-    | "Convencional";
+const DialogHeader = styled("div")({
+    backgroundColor: "#4169e1",
+    color: "#FFFFFF",
+    padding: "12px 16px",
+    fontSize: "18px",
+    fontWeight: "regular",
+    textAlign: "center",
+});
 
-type Questao = {
-    id: string;
-    questao_nome: string;
-    questao_categoria: RiasecCategory;
-};
+const DialogBody = styled(DialogContent)({
+    padding: "0px 50px 0px 50px",
+    fontSize: "16px",
+    width: "400px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+});
+
+const CenteredDialogActions = styled(DialogActions)({
+    justifyContent: "center",
+    paddingBottom: "32px",
+    paddingTop: "16px",
+});
 
 export default function MultiStepDialog() {
-    const [open, setOpen] = React.useState(false);
-    const [personData, setPersonData] = React.useState<personData>({
-        answers: {},
-    });
-    const [questoes, setQuestoes] = React.useState<Questao[]>();
-    const [userResult, setUserResult] = React.useState<ResultadoRiasec[]>();
+    const [open, setOpen] = useState(false);
+    const [resultDialogOpen, setResultDialogOpen] = useState(false);
+    const [personData, setPersonData] = useState({ answers: {} });
+    const [questoes, setQuestoes] = useState([]);
+    const [userResult, setUserResult] = useState([]);
+    const [scoreData, setScoreData] = useState([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
     useEffect(() => {
         questaoService
             .getAllQuestao()
-            .then((response) => {
-                setQuestoes(response);
-            })
-            .catch((error) => {
-                console.log("Erro ao buscar questões:", error);
-            });
+            .then((response) => setQuestoes(response))
+            .catch((error) => console.log("Erro ao buscar questões:", error));
     }, []);
 
-    const handleClickOpen = () => {
-        if (questoes === undefined) {
-            questaoService
-                .getAllQuestao()
-                .then((response) => {
-                    setQuestoes(response);
-                })
-                .catch((error) => {
-                    console.log("Erro ao buscar questões:", error);
-                });
-        }
-        setOpen(true);
-    };
-
+    const handleClickOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
         setPersonData({ answers: {} });
+        setCurrentQuestionIndex(0);
+    };
+    const handleCloseResultDialog = () => {
+        setResultDialogOpen(false);
+        setOpen(false);
+        setPersonData({ answers: {} });
+        setCurrentQuestionIndex(0);
     };
 
-    const handleNext = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        if (questoes === undefined) {
-            return;
-        }
-
-        const newFormData = new FormData(event.currentTarget);
-        const updatedData = Object.fromEntries(newFormData.entries());
-
-        setPersonData((prevData) => ({
-            ...prevData,
-            ...updatedData,
-            age: updatedData.age ? Number(updatedData.age) : "",
-        }));
-
-        handleClose();
-    };
-
-    const handleAnswerChange = (question: string, value: string) => {
+    const handleAnswerChange = (question, value) => {
         setPersonData((prevData) => ({
             ...prevData,
             answers: { ...prevData.answers, [question]: value },
         }));
     };
 
+    const handleNextQuestion = () => {
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    };
+
     const isAllAnswered = () => {
         return questoes?.every(
-            (question) => personData.answers[question.questao_nome]
+            (question) =>
+                personData.answers[question.questao_nome] !== undefined
         );
     };
 
-    const riasecResult = (
-        answers: { [key: string]: string },
-        questoes: { questao_nome: string; questao_categoria: RiasecCategory }[]
-    ): void => {
-        const result: Record<RiasecCategory, number> = {
+    const riasecResult = (answers, questoes) => {
+        const result = {
             Realista: 0,
             Investigativo: 0,
             Artístico: 0,
@@ -126,12 +117,16 @@ export default function MultiStepDialog() {
             });
         }
 
-        // Relacionar quais categorias são mais fortes
-        const sortedResult = Object.entries(result).sort(
-            ([, valueA], [, valueB]) => valueB - valueA
+        setScoreData(
+            Object.entries(result).map(([categoria, pontuacao]) => ({
+                categoria,
+                pontuacao,
+            }))
         );
 
-        // Mostrar a categoria mais forte e em caso de empate, mostrar todas
+        const sortedResult = Object.entries(result).sort(
+            ([, a], [, b]) => b - a
+        );
         const strongestCategory = sortedResult.filter(
             ([, value]) => value === sortedResult[0][1]
         );
@@ -142,112 +137,252 @@ export default function MultiStepDialog() {
             )
             .then((response) => {
                 setUserResult(response);
-                console.log("RESULTADO: ", response);
+                setResultDialogOpen(true);
             });
     };
 
-    const renderDialogContent = () => {
-        return (
-            <>
-                <DialogTitle>Teste vocacional</DialogTitle>
-                <DialogContent
-                    dividers
-                    style={{ maxHeight: "400px", overflowY: "auto" }}
-                >
-                    {questoes &&
-                        questoes.map((question) => (
-                            <FormControl
-                                key={question.id}
-                                component="fieldset"
-                                fullWidth
-                                style={{ marginBottom: "1.5rem" }}
-                            >
-                                <FormLabel
-                                    component="legend"
-                                    style={{ display: "block" }}
-                                >
-                                    {question.questao_nome}
-                                </FormLabel>
-                                <RadioGroup
-                                    name={question.id}
-                                    style={{ width: "100%" }}
-                                    value={
-                                        personData.answers[
-                                            question.questao_nome
-                                        ] || ""
-                                    }
-                                    onChange={(event) =>
-                                        handleAnswerChange(
-                                            question.questao_nome,
-                                            event.target.value
-                                        )
-                                    }
-                                >
-                                    <FormControlLabel
-                                        value="0"
-                                        control={<Radio />}
-                                        label="Odeio"
-                                    />
-                                    <FormControlLabel
-                                        value="1"
-                                        control={<Radio />}
-                                        label="Não gosto"
-                                    />
-                                    <FormControlLabel
-                                        value="2"
-                                        control={<Radio />}
-                                        label="Não tenho preferência"
-                                    />
-                                    <FormControlLabel
-                                        value="3"
-                                        control={<Radio />}
-                                        label="Gosto"
-                                    />
-                                    <FormControlLabel
-                                        value="4"
-                                        control={<Radio />}
-                                        label="Adoro"
-                                    />
-                                </RadioGroup>
-                            </FormControl>
-                        ))}
-                </DialogContent>
-            </>
-        );
-    };
-
     return (
-        <React.Fragment>
+        <>
             <Button variant="outlined" onClick={handleClickOpen}>
                 Iniciar teste
             </Button>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                PaperProps={{
-                    component: "form",
-                    onSubmit: handleNext,
-                }}
-            >
-                {renderDialogContent()}
-                <DialogActions>
-                    {/* <Button onClick={() => setStep((prevStep) => prevStep - 1)}>
-                        Voltar
-                    </Button> */}
-
-                    <Button
-                        type="submit"
-                        disabled={!isAllAnswered() || !questoes}
-                        onClick={() => {
-                            if (questoes) {
-                                riasecResult(personData.answers, questoes);
+            <CustomDialog open={open} onClose={handleClose}>
+                <DialogHeader>Teste Vocacional</DialogHeader>
+                <DialogBody>
+                    {questoes.length > 0 &&
+                        currentQuestionIndex < questoes.length && (
+                            <>
+                                <Typography
+                                    variant="body2"
+                                    align="center"
+                                    mb={2}
+                                    sx={{ marginTop: "16px" }}
+                                >
+                                    {currentQuestionIndex + 1}/{questoes.length}
+                                </Typography>
+                                <Box
+                                    sx={{
+                                        height: 12,
+                                        backgroundColor: "lightgray",
+                                        borderRadius: "32px",
+                                        marginBottom: 2,
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            height: "100%",
+                                            width: `${
+                                                ((currentQuestionIndex + 1) /
+                                                    questoes.length) *
+                                                100
+                                            }%`,
+                                            backgroundColor: "#000000",
+                                            borderRadius: "32px",
+                                        }}
+                                    />
+                                </Box>
+                                <FormControl fullWidth>
+                                    <FormLabel sx={{ fontWeight: "bold" }}>
+                                        {
+                                            questoes[currentQuestionIndex]
+                                                .questao_nome
+                                        }
+                                    </FormLabel>
+                                    <RadioGroup
+                                        name={questoes[currentQuestionIndex].id}
+                                        value={
+                                            personData.answers[
+                                                questoes[currentQuestionIndex]
+                                                    .questao_nome
+                                            ] || ""
+                                        }
+                                        onChange={(event) =>
+                                            handleAnswerChange(
+                                                questoes[currentQuestionIndex]
+                                                    .questao_nome,
+                                                event.target.value
+                                            )
+                                        }
+                                    >
+                                        {[0, 1, 2, 3, 4].map((val) => (
+                                            <FormControlLabel
+                                                key={val}
+                                                value={val.toString()}
+                                                control={<Radio />}
+                                                label={
+                                                    [
+                                                        "Odeio",
+                                                        "Não gosto",
+                                                        "Não tenho preferência",
+                                                        "Gosto",
+                                                        "Adoro",
+                                                    ][val]
+                                                }
+                                            />
+                                        ))}
+                                    </RadioGroup>
+                                </FormControl>
+                            </>
+                        )}
+                </DialogBody>
+                <CenteredDialogActions>
+                    {currentQuestionIndex > 0 && (
+                        <Button
+                            onClick={() =>
+                                setCurrentQuestionIndex(
+                                    (prevIndex) => prevIndex - 1
+                                )
                             }
-                        }}
+                            variant="contained"
+                            color="secondary"
+                            sx={{
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    backgroundColor: "#000000",
+                                    boxShadow:
+                                        "0px 4px 12px rgba(0, 0, 0, 0.3)",
+                                },
+                                "&:active": {
+                                    transform: "scale(0.98)",
+                                    boxShadow:
+                                        "0px 8px 16px rgba(0, 0, 0, 0.3)",
+                                },
+                            }}
+                        >
+                            Voltar
+                        </Button>
+                    )}
+                    {currentQuestionIndex < questoes.length - 1 ? (
+                        <Button
+                            onClick={handleNextQuestion}
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    backgroundColor: "#007bb2",
+                                    boxShadow:
+                                        "0px 4px 12px rgba(0, 0, 0, 0.3)",
+                                },
+                                "&:active": {
+                                    transform: "scale(0.98)",
+                                    boxShadow:
+                                        "0px 8px 16px rgba(0, 0, 0, 0.3)",
+                                },
+                            }}
+                        >
+                            Próxima
+                        </Button>
+                    ) : (
+                        <Button
+                            disabled={!isAllAnswered()}
+                            onClick={() =>
+                                questoes &&
+                                riasecResult(personData.answers, questoes)
+                            }
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    backgroundColor: "#007bb2",
+                                    boxShadow:
+                                        "0px 4px 12px rgba(0, 0, 0, 0.3)",
+                                },
+                                "&:active": {
+                                    transform: "scale(0.98)",
+                                    boxShadow:
+                                        "0px 8px 16px rgba(0, 0, 0, 0.3)",
+                                },
+                            }}
+                        >
+                            Finalizar
+                        </Button>
+                    )}
+                </CenteredDialogActions>
+            </CustomDialog>
+            <CustomDialog
+                open={resultDialogOpen}
+                onClose={handleCloseResultDialog}
+            >
+                <DialogHeader>Resultado</DialogHeader>
+                <DialogBody sx={{ marginTop: "16px" }}>
+                    <Box
+                        display="flex"
+                        justifyContent="center"
+                        gap={2}
+                        alignItems="flex-end"
                     >
-                        {"Finalizar"}
+                        {scoreData.map(({ categoria, pontuacao }) => {
+                            const blackBarHeight = (pontuacao / 40) * 100;
+                            const grayBarHeight = 100 - blackBarHeight;
+
+                            return (
+                                <Box key={categoria} textAlign="center">
+                                    <Box
+                                        height={200}
+                                        width={30}
+                                        bgcolor="lightgray"
+                                        display="flex"
+                                        alignItems="flex-end"
+                                        justifyContent="center"
+                                        sx={{
+                                            borderRadius: "8px",
+                                            overflow: "hidden",
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                height: `${blackBarHeight}%`,
+                                                width: "5000%",
+                                                bgcolor: "black",
+                                                borderBottomLeftRadius: "8px",
+                                                borderBottomRightRadius: "8px",
+                                            }}
+                                        />
+                                        <Box
+                                            sx={{
+                                                height: `${grayBarHeight}%`,
+                                                width: "100%",
+                                                bgcolor: "lightgray",
+                                                borderBottomLeftRadius: "8px",
+                                                borderBottomRightRadius: "8px",
+                                            }}
+                                        />
+                                    </Box>
+                                    <Typography>{categoria[0]}</Typography>
+                                </Box>
+                            );
+                        })}
+                    </Box>
+                    <Typography
+                        variant="h6"
+                        align="center"
+                        fontWeight="bold"
+                        mt={2}
+                        mb={2}
+                    >
+                        SUA PERSONALIDADE PROFISSIONAL
+                    </Typography>
+                    {userResult?.map((result) => (
+                        <Box key={result.categoria} textAlign="center">
+                            <Typography variant="h7" fontWeight="bold">
+                                {result.categoria}
+                            </Typography>
+                            <Typography>{result.descricao}</Typography>
+                        </Box>
+                    ))}
+                </DialogBody>
+                <CenteredDialogActions>
+                    <Button
+                        onClick={handleCloseResultDialog}
+                        variant="contained"
+                        color="primary"
+                    >
+                        Fechar
                     </Button>
-                </DialogActions>
-            </Dialog>
-        </React.Fragment>
+                </CenteredDialogActions>
+            </CustomDialog>
+        </>
     );
 }
