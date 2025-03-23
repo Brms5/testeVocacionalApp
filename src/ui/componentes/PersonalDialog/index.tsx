@@ -19,6 +19,7 @@ import { questaoService } from "@/client/services/Questao";
 import { useEffect, useState } from "react";
 import { resultadoRiasecService } from "@/client/services/ResultadoRiasec";
 
+// Styled components
 const CustomDialog = styled(Dialog)({
     ".MuiPaper-root": {
         borderRadius: "20px",
@@ -37,7 +38,7 @@ const DialogHeader = styled("div")({
 });
 
 const DialogBody = styled(DialogContent)({
-    padding: "0px 50px 0px 50px",
+    padding: "0px 50px",
     fontSize: "16px",
     width: "400px",
     display: "flex",
@@ -60,26 +61,33 @@ export default function MultiStepDialog() {
     const [scoreData, setScoreData] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+    // Fetching questions on component mount
     useEffect(() => {
         questaoService
             .getAllQuestao()
             .then((response: Questao[]) => setQuestoes(response))
-            .catch((error) => console.log("Erro ao buscar questões:", error));
+            .catch((error) => console.error("Erro ao buscar questões:", error));
     }, []);
 
+    // Handlers for opening/closing dialogs
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
-        setPersonData({ answers: {} });
-        setCurrentQuestionIndex(0);
+        resetDialogState();
     };
     const handleCloseResultDialog = () => {
         setResultDialogOpen(false);
         setOpen(false);
+        resetDialogState();
+    };
+
+    // Reset dialog-related state
+    const resetDialogState = () => {
         setPersonData({ answers: {} });
         setCurrentQuestionIndex(0);
     };
 
+    // Handle answer change for each question
     const handleAnswerChange = (question: string, value: any) => {
         setPersonData((prevData) => ({
             ...prevData,
@@ -87,17 +95,19 @@ export default function MultiStepDialog() {
         }));
     };
 
+    // Move to next question
     const handleNextQuestion = () => {
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
     };
 
+    // Check if all questions have been answered
     const isAllAnswered = () => {
         return questoes?.every(
-            (question) =>
-                personData.answers[question.questao_nome] !== undefined
+            (question) => personData.answers[question.questao_nome] !== undefined
         );
     };
 
+    // Calculate RIASEC result based on answers and questions
     const riasecResult = (answers, questoes) => {
         const result = {
             Realista: 0,
@@ -108,13 +118,13 @@ export default function MultiStepDialog() {
             Convencional: 0,
         };
 
-        for (const [key, value] of Object.entries(answers)) {
+        Object.entries(answers).forEach(([key, value]) => {
             questoes.forEach((question) => {
                 if (question.questao_nome === key) {
                     result[question.questao_categoria] += parseInt(value, 10);
                 }
             });
-        }
+        });
 
         setScoreData(
             Object.entries(result).map(([categoria, pontuacao]) => ({
