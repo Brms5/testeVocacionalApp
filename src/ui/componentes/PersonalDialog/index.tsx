@@ -35,12 +35,30 @@ type Questao = {
     questao_categoria: RiasecCategory;
 };
 
+const categoryDescriptions: Record<RiasecCategory, string> = {
+    Realista: "Você prefere trabalhar com coisas práticas e tem grande habilidade com tarefas que exigem organização e eficiência.",
+    Investigativo: "Você gosta de resolver problemas complexos e busca aprender e explorar novas ideias de forma analítica.",
+    Artístico: "Você tem uma forte capacidade criativa, com grande interesse por atividades artísticas e expressão pessoal.",
+    Social: "Você sente prazer em ajudar os outros, sendo mais voltado para interações interpessoais e atividades colaborativas.",
+    Empreendedor: "Você é focado em resultados, com uma grande capacidade para tomar riscos e liderar projetos.",
+    Convencional: "Você é detalhista e gosta de seguir regras e processos, com uma forte orientação para o planejamento e organização.",
+};
+
+const categoryColors: Record<RiasecCategory, string> = {
+    Realista: '#FF5733', // Exemplo de cor para Realista
+    Investigativo: '#33FF57', // Exemplo de cor para Investigativo
+    Artístico: '#5733FF', // Exemplo de cor para Artístico
+    Social: '#FF33A6', // Exemplo de cor para Social
+    Empreendedor: '#FFCC33', // Exemplo de cor para Empreendedor
+    Convencional: '#33CCFF', // Exemplo de cor para Convencional
+};
+
 export default function MultiStepDialog() {
     const [open, setOpen] = React.useState(false);
     const [resultDialogOpen, setResultDialogOpen] = React.useState(false);
     const [personData, setPersonData] = React.useState<personData>({ answers: {} });
     const [questoes, setQuestoes] = React.useState<Questao[]>();
-    const [userResult, setUserResult] = React.useState<string>("");
+    const [userResult, setUserResult] = React.useState<string>(""); 
     const [resultValues, setResultValues] = React.useState<Record<RiasecCategory, number>>({
         Realista: 0,
         Investigativo: 0,
@@ -182,10 +200,8 @@ export default function MultiStepDialog() {
             </Dialog>
 
             <Dialog open={resultDialogOpen} onClose={() => setResultDialogOpen(false)}>
-            <DialogTitle style={{ textAlign: 'center' }}>Resultado do Teste</DialogTitle>
-            <DialogContent>
-                <div>
-
+                <DialogTitle style={{ textAlign: 'center' }}>Resultado do Teste</DialogTitle>
+                <DialogContent>
                     <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-evenly', marginTop: '20px' }}>
                         {Object.entries(resultValues).map(([category, value]) => (
                             <div key={category} style={{ marginBottom: '10px', textAlign: 'center' }}>
@@ -194,7 +210,7 @@ export default function MultiStepDialog() {
                                     style={{
                                         width: '30px', // Largura das barras
                                         height: `${(value / Math.max(...Object.values(resultValues))) * 200}px`, // Altura proporcional ao valor
-                                        backgroundColor: 'skyblue',
+                                        backgroundColor: categoryColors[category as RiasecCategory], // Aplica a cor com base na categoria
                                         borderRadius: '5px',
                                         marginBottom: '5px',
                                     }}
@@ -220,16 +236,18 @@ export default function MultiStepDialog() {
                             </div>
                         ))}
                     </div>
-                </div>
-                <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                    <p>Sua personalidade profissional:</p>
-                    <strong>{userResult}</strong> {/* Resultado abaixo do texto */}
-                </div>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => setResultDialogOpen(false)}>Fechar</Button>
-            </DialogActions>
-        </Dialog>
+                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                        <p>Sua personalidade profissional:</p>
+                        <strong>{userResult}</strong> {/* Resultado abaixo do texto */}
+                    </div>
+                    <div style={{ marginTop: '10px', maxWidth: '200px', marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}>
+                        <p>{categoryDescriptions[userResult as RiasecCategory]}</p>
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setResultDialogOpen(false)}>Fechar</Button>
+                </DialogActions>
+            </Dialog>
         </React.Fragment>
     );
 }
