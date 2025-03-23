@@ -64,7 +64,7 @@ export default function MultiStepDialog() {
     useEffect(() => {
         questaoService
             .getAllQuestao()
-            .then((response) => setQuestoes(response))
+            .then((response: Questao[]) => setQuestoes(response))
             .catch((error) => console.log("Erro ao buscar questões:", error));
     }, []);
 
