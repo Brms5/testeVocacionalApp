@@ -56,7 +56,7 @@ export default function MultiStepDialog() {
     const [open, setOpen] = useState(false);
     const [resultDialogOpen, setResultDialogOpen] = useState(false);
     const [personData, setPersonData] = useState({ answers: {} });
-    const [questoes, setQuestoes] = useState([]);
+    const [questoes, setQuestoes] = useState<Questao[]>([]);
     const [userResult, setUserResult] = useState([]);
     const [scoreData, setScoreData] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
