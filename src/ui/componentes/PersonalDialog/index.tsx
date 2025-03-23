@@ -6,7 +6,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
     Radio,
     RadioGroup,
     FormControlLabel,
@@ -15,7 +14,7 @@ import {
     Box,
     Typography,
 } from "@mui/material";
-import { borderColor, styled } from "@mui/system";
+import { styled } from "@mui/system";
 import { questaoService } from "@/client/services/Questao";
 import { useEffect, useState } from "react";
 import { resultadoRiasecService } from "@/client/services/ResultadoRiasec";
@@ -81,7 +80,7 @@ export default function MultiStepDialog() {
         setCurrentQuestionIndex(0);
     };
 
-    const handleAnswerChange = (question, value) => {
+    const handleAnswerChange = (question: string, value: any) => {
         setPersonData((prevData) => ({
             ...prevData,
             answers: { ...prevData.answers, [question]: value },
