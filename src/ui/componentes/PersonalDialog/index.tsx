@@ -36,30 +36,39 @@ type Questao = {
 };
 
 const categoryDescriptions: Record<RiasecCategory, string> = {
-    Realista: "Você prefere trabalhar com coisas práticas e tem grande habilidade com tarefas que exigem organização e eficiência.",
-    Investigativo: "Você gosta de resolver problemas complexos e busca aprender e explorar novas ideias de forma analítica.",
-    Artístico: "Você tem uma forte capacidade criativa, com grande interesse por atividades artísticas e expressão pessoal.",
+    Realista:
+        "Você prefere trabalhar com coisas práticas e tem grande habilidade com tarefas que exigem organização e eficiência.",
+    Investigativo:
+        "Você gosta de resolver problemas complexos e busca aprender e explorar novas ideias de forma analítica.",
+    Artístico:
+        "Você tem uma forte capacidade criativa, com grande interesse por atividades artísticas e expressão pessoal.",
     Social: "Você sente prazer em ajudar os outros, sendo mais voltado para interações interpessoais e atividades colaborativas.",
-    Empreendedor: "Você é focado em resultados, com uma grande capacidade para tomar riscos e liderar projetos.",
-    Convencional: "Você é detalhista e gosta de seguir regras e processos, com uma forte orientação para o planejamento e organização.",
+    Empreendedor:
+        "Você é focado em resultados, com uma grande capacidade para tomar riscos e liderar projetos.",
+    Convencional:
+        "Você é detalhista e gosta de seguir regras e processos, com uma forte orientação para o planejamento e organização.",
 };
 
 const categoryColors: Record<RiasecCategory, string> = {
-    Realista: '#FF5733', // Exemplo de cor para Realista
-    Investigativo: '#33FF57', // Exemplo de cor para Investigativo
-    Artístico: '#5733FF', // Exemplo de cor para Artístico
-    Social: '#FF33A6', // Exemplo de cor para Social
-    Empreendedor: '#FFCC33', // Exemplo de cor para Empreendedor
-    Convencional: '#33CCFF', // Exemplo de cor para Convencional
+    Realista: "#FF5733", // Exemplo de cor para Realista
+    Investigativo: "#33FF57", // Exemplo de cor para Investigativo
+    Artístico: "#5733FF", // Exemplo de cor para Artístico
+    Social: "#FF33A6", // Exemplo de cor para Social
+    Empreendedor: "#FFCC33", // Exemplo de cor para Empreendedor
+    Convencional: "#33CCFF", // Exemplo de cor para Convencional
 };
 
 export default function MultiStepDialog() {
     const [open, setOpen] = React.useState(false);
     const [resultDialogOpen, setResultDialogOpen] = React.useState(false);
-    const [personData, setPersonData] = React.useState<personData>({ answers: {} });
+    const [personData, setPersonData] = React.useState<personData>({
+        answers: {},
+    });
     const [questoes, setQuestoes] = React.useState<Questao[]>();
-    const [userResult, setUserResult] = React.useState<string>(""); 
-    const [resultValues, setResultValues] = React.useState<Record<RiasecCategory, number>>({
+    const [userResult, setUserResult] = React.useState<string>("");
+    const [resultValues, setResultValues] = React.useState<
+        Record<RiasecCategory, number>
+    >({
         Realista: 0,
         Investigativo: 0,
         Artístico: 0,
@@ -132,7 +141,7 @@ export default function MultiStepDialog() {
 
     const riasecResult = (
         answers: { [key: string]: string },
-        questoes: { questao_nome: string; questao_categoria: RiasecCategory }[] 
+        questoes: { questao_nome: string; questao_categoria: RiasecCategory }[]
     ): void => {
         const result: Record<RiasecCategory, number> = {
             Realista: 0,
@@ -172,80 +181,174 @@ export default function MultiStepDialog() {
             <Button variant="outlined" onClick={handleClickOpen}>
                 Iniciar teste
             </Button>
-            <Dialog open={open} onClose={handleClose} PaperProps={{ component: "form", onSubmit: handleNext }}>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                PaperProps={{ component: "form", onSubmit: handleNext }}
+            >
                 <DialogTitle>Teste vocacional</DialogTitle>
                 <DialogContent>
                     {questoes?.map((question) => (
-                        <FormControl key={question.id} component="fieldset" fullWidth style={{ marginBottom: "1.5rem" }}>
+                        <FormControl
+                            key={question.id}
+                            component="fieldset"
+                            fullWidth
+                            style={{ marginBottom: "1.5rem" }}
+                        >
                             <FormLabel>{question.questao_nome}</FormLabel>
                             <RadioGroup
                                 name={question.id}
-                                value={personData.answers[question.questao_nome] || ""}
-                                onChange={(event) => handleAnswerChange(question.questao_nome, event.target.value)}
+                                value={
+                                    personData.answers[question.questao_nome] ||
+                                    ""
+                                }
+                                onChange={(event) =>
+                                    handleAnswerChange(
+                                        question.questao_nome,
+                                        event.target.value
+                                    )
+                                }
                             >
-                                <FormControlLabel value="0" control={<Radio />} label="Odeio" />
-                                <FormControlLabel value="1" control={<Radio />} label="Não gosto" />
-                                <FormControlLabel value="2" control={<Radio />} label="Indiferente" />
-                                <FormControlLabel value="3" control={<Radio />} label="Gosto" />
-                                <FormControlLabel value="4" control={<Radio />} label="Adoro" />
+                                <FormControlLabel
+                                    value="0"
+                                    control={<Radio />}
+                                    label="Odeio"
+                                />
+                                <FormControlLabel
+                                    value="1"
+                                    control={<Radio />}
+                                    label="Não gosto"
+                                />
+                                <FormControlLabel
+                                    value="2"
+                                    control={<Radio />}
+                                    label="Indiferente"
+                                />
+                                <FormControlLabel
+                                    value="3"
+                                    control={<Radio />}
+                                    label="Gosto"
+                                />
+                                <FormControlLabel
+                                    value="4"
+                                    control={<Radio />}
+                                    label="Adoro"
+                                />
                             </RadioGroup>
                         </FormControl>
                     ))}
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit" disabled={!isAllAnswered()} onClick={() => questoes && riasecResult(personData.answers, questoes)}>
+                    <Button
+                        type="submit"
+                        disabled={!isAllAnswered()}
+                        onClick={() =>
+                            questoes &&
+                            riasecResult(personData.answers, questoes)
+                        }
+                    >
                         Finalizar
                     </Button>
                 </DialogActions>
             </Dialog>
 
-            <Dialog open={resultDialogOpen} onClose={() => setResultDialogOpen(false)}>
-                <DialogTitle style={{ textAlign: 'center' }}>Resultado do Teste</DialogTitle>
+            <Dialog
+                open={resultDialogOpen}
+                onClose={() => setResultDialogOpen(false)}
+            >
+                <DialogTitle style={{ textAlign: "center" }}>
+                    Resultado do Teste
+                </DialogTitle>
                 <DialogContent>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-evenly', marginTop: '20px' }}>
-                        {Object.entries(resultValues).map(([category, value]) => (
-                            <div key={category} style={{ marginBottom: '10px', textAlign: 'center' }}>
-                                {/* Barra vertical */}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "flex-end",
+                            justifyContent: "space-evenly",
+                            marginTop: "20px",
+                        }}
+                    >
+                        {Object.entries(resultValues).map(
+                            ([category, value]) => (
                                 <div
+                                    key={category}
                                     style={{
-                                        width: '30px', // Largura das barras
-                                        height: `${(value / Math.max(...Object.values(resultValues))) * 200}px`, // Altura proporcional ao valor
-                                        backgroundColor: categoryColors[category as RiasecCategory], // Aplica a cor com base na categoria
-                                        borderRadius: '5px',
-                                        marginBottom: '5px',
+                                        marginBottom: "10px",
+                                        textAlign: "center",
                                     }}
                                 >
-                                    {/* Exibindo o valor no topo da barra */}
-                                    <span
+                                    {/* Barra vertical */}
+                                    <div
                                         style={{
-                                            position: 'absolute',
-                                            bottom: '100%',
-                                            width: '100%',
-                                            textAlign: 'center',
-                                            paddingBottom: '5px',
-                                            color: 'black',
+                                            width: "30px", // Largura das barras
+                                            height: `${
+                                                (value /
+                                                    Math.max(
+                                                        ...Object.values(
+                                                            resultValues
+                                                        )
+                                                    )) *
+                                                200
+                                            }px`, // Altura proporcional ao valor
+                                            backgroundColor:
+                                                categoryColors[
+                                                    category as RiasecCategory
+                                                ], // Aplica a cor com base na categoria
+                                            borderRadius: "5px",
+                                            marginBottom: "5px",
                                         }}
                                     >
-                                        {value}
+                                        {/* Exibindo o valor no topo da barra */}
+                                        <span
+                                            style={{
+                                                position: "absolute",
+                                                bottom: "100%",
+                                                width: "100%",
+                                                textAlign: "center",
+                                                paddingBottom: "5px",
+                                                color: "black",
+                                            }}
+                                        >
+                                            {value}
+                                        </span>
+                                    </div>
+                                    {/* Inicial da categoria abaixo da barra */}
+                                    <span
+                                        style={{
+                                            display: "block",
+                                            marginTop: "5px",
+                                        }}
+                                    >
+                                        {category[0]}{" "}
+                                        {/* Pegando apenas a primeira letra */}
                                     </span>
                                 </div>
-                                {/* Inicial da categoria abaixo da barra */}
-                                <span style={{ display: 'block', marginTop: '5px' }}>
-                                    {category[0]} {/* Pegando apenas a primeira letra */}
-                                </span>
-                            </div>
-                        ))}
+                            )
+                        )}
                     </div>
-                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                    <div style={{ textAlign: "center", marginTop: "20px" }}>
                         <p>Sua personalidade profissional:</p>
-                        <strong>{userResult}</strong> {/* Resultado abaixo do texto */}
+                        <strong>{userResult}</strong>{" "}
+                        {/* Resultado abaixo do texto */}
                     </div>
-                    <div style={{ marginTop: '10px', maxWidth: '200px', marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}>
-                        <p>{categoryDescriptions[userResult as RiasecCategory]}</p>
+                    <div
+                        style={{
+                            marginTop: "10px",
+                            maxWidth: "200px",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            textAlign: "center",
+                        }}
+                    >
+                        <p>
+                            {categoryDescriptions[userResult as RiasecCategory]}
+                        </p>
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setResultDialogOpen(false)}>Fechar</Button>
+                    <Button onClick={() => setResultDialogOpen(false)}>
+                        Fechar
+                    </Button>
                 </DialogActions>
             </Dialog>
         </React.Fragment>
