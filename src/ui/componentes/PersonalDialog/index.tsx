@@ -35,13 +35,47 @@ type Questao = {
     questao_categoria: RiasecCategory;
 };
 
+const categoryDescriptions: Record<RiasecCategory, string> = {
+    Realista:
+        "Você prefere trabalhar com coisas práticas e tem grande habilidade com tarefas que exigem organização e eficiência.",
+    Investigativo:
+        "Você gosta de resolver problemas complexos e busca aprender e explorar novas ideias de forma analítica.",
+    Artístico:
+        "Você tem uma forte capacidade criativa, com grande interesse por atividades artísticas e expressão pessoal.",
+    Social: "Você sente prazer em ajudar os outros, sendo mais voltado para interações interpessoais e atividades colaborativas.",
+    Empreendedor:
+        "Você é focado em resultados, com uma grande capacidade para tomar riscos e liderar projetos.",
+    Convencional:
+        "Você é detalhista e gosta de seguir regras e processos, com uma forte orientação para o planejamento e organização.",
+};
+
+const categoryColors: Record<RiasecCategory, string> = {
+    Realista: "#FF5733", // Exemplo de cor para Realista
+    Investigativo: "#33FF57", // Exemplo de cor para Investigativo
+    Artístico: "#5733FF", // Exemplo de cor para Artístico
+    Social: "#FF33A6", // Exemplo de cor para Social
+    Empreendedor: "#FFCC33", // Exemplo de cor para Empreendedor
+    Convencional: "#33CCFF", // Exemplo de cor para Convencional
+};
+
 export default function MultiStepDialog() {
     const [open, setOpen] = React.useState(false);
+    const [resultDialogOpen, setResultDialogOpen] = React.useState(false);
     const [personData, setPersonData] = React.useState<personData>({
         answers: {},
     });
     const [questoes, setQuestoes] = React.useState<Questao[]>();
-    const [userResult, setUserResult] = React.useState<ResultadoRiasec[]>();
+    const [userResult, setUserResult] = React.useState<string>("");
+    const [resultValues, setResultValues] = React.useState<
+        Record<RiasecCategory, number>
+    >({
+        Realista: 0,
+        Investigativo: 0,
+        Artístico: 0,
+        Social: 0,
+        Empreendedor: 0,
+        Convencional: 0,
+    });
 
     useEffect(() => {
         questaoService
@@ -126,94 +160,20 @@ export default function MultiStepDialog() {
             });
         }
 
-        // Relacionar quais categorias são mais fortes
+        setResultValues(result);
+
         const sortedResult = Object.entries(result).sort(
             ([, valueA], [, valueB]) => valueB - valueA
         );
 
-        // Mostrar a categoria mais forte e em caso de empate, mostrar todas
         const strongestCategory = sortedResult.filter(
             ([, value]) => value === sortedResult[0][1]
         );
 
-        resultadoRiasecService
-            .getResultadosRiasecByCategoria(
-                strongestCategory.map(([category]) => category)
-            )
-            .then((response) => {
-                setUserResult(response);
-                console.log("RESULTADO: ", response);
-            });
-    };
-
-    const renderDialogContent = () => {
-        return (
-            <>
-                <DialogTitle>Teste vocacional</DialogTitle>
-                <DialogContent
-                    dividers
-                    style={{ maxHeight: "400px", overflowY: "auto" }}
-                >
-                    {questoes &&
-                        questoes.map((question) => (
-                            <FormControl
-                                key={question.id}
-                                component="fieldset"
-                                fullWidth
-                                style={{ marginBottom: "1.5rem" }}
-                            >
-                                <FormLabel
-                                    component="legend"
-                                    style={{ display: "block" }}
-                                >
-                                    {question.questao_nome}
-                                </FormLabel>
-                                <RadioGroup
-                                    name={question.id}
-                                    style={{ width: "100%" }}
-                                    value={
-                                        personData.answers[
-                                            question.questao_nome
-                                        ] || ""
-                                    }
-                                    onChange={(event) =>
-                                        handleAnswerChange(
-                                            question.questao_nome,
-                                            event.target.value
-                                        )
-                                    }
-                                >
-                                    <FormControlLabel
-                                        value="0"
-                                        control={<Radio />}
-                                        label="Odeio"
-                                    />
-                                    <FormControlLabel
-                                        value="1"
-                                        control={<Radio />}
-                                        label="Não gosto"
-                                    />
-                                    <FormControlLabel
-                                        value="2"
-                                        control={<Radio />}
-                                        label="Não tenho preferência"
-                                    />
-                                    <FormControlLabel
-                                        value="3"
-                                        control={<Radio />}
-                                        label="Gosto"
-                                    />
-                                    <FormControlLabel
-                                        value="4"
-                                        control={<Radio />}
-                                        label="Adoro"
-                                    />
-                                </RadioGroup>
-                            </FormControl>
-                        ))}
-                </DialogContent>
-            </>
+        setUserResult(
+            strongestCategory.map(([category]) => category).join(", ")
         );
+        setResultDialogOpen(true);
     };
 
     return (
@@ -224,27 +184,170 @@ export default function MultiStepDialog() {
             <Dialog
                 open={open}
                 onClose={handleClose}
-                PaperProps={{
-                    component: "form",
-                    onSubmit: handleNext,
-                }}
+                PaperProps={{ component: "form", onSubmit: handleNext }}
             >
-                {renderDialogContent()}
+                <DialogTitle>Teste vocacional</DialogTitle>
+                <DialogContent>
+                    {questoes?.map((question) => (
+                        <FormControl
+                            key={question.id}
+                            component="fieldset"
+                            fullWidth
+                            style={{ marginBottom: "1.5rem" }}
+                        >
+                            <FormLabel>{question.questao_nome}</FormLabel>
+                            <RadioGroup
+                                name={question.id}
+                                value={
+                                    personData.answers[question.questao_nome] ||
+                                    ""
+                                }
+                                onChange={(event) =>
+                                    handleAnswerChange(
+                                        question.questao_nome,
+                                        event.target.value
+                                    )
+                                }
+                            >
+                                <FormControlLabel
+                                    value="0"
+                                    control={<Radio />}
+                                    label="Odeio"
+                                />
+                                <FormControlLabel
+                                    value="1"
+                                    control={<Radio />}
+                                    label="Não gosto"
+                                />
+                                <FormControlLabel
+                                    value="2"
+                                    control={<Radio />}
+                                    label="Indiferente"
+                                />
+                                <FormControlLabel
+                                    value="3"
+                                    control={<Radio />}
+                                    label="Gosto"
+                                />
+                                <FormControlLabel
+                                    value="4"
+                                    control={<Radio />}
+                                    label="Adoro"
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                    ))}
+                </DialogContent>
                 <DialogActions>
-                    {/* <Button onClick={() => setStep((prevStep) => prevStep - 1)}>
-                        Voltar
-                    </Button> */}
-
                     <Button
                         type="submit"
-                        disabled={!isAllAnswered() || !questoes}
-                        onClick={() => {
-                            if (questoes) {
-                                riasecResult(personData.answers, questoes);
-                            }
+                        disabled={!isAllAnswered()}
+                        onClick={() =>
+                            questoes &&
+                            riasecResult(personData.answers, questoes)
+                        }
+                    >
+                        Finalizar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={resultDialogOpen}
+                onClose={() => setResultDialogOpen(false)}
+            >
+                <DialogTitle style={{ textAlign: "center" }}>
+                    Resultado do Teste
+                </DialogTitle>
+                <DialogContent>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "flex-end",
+                            justifyContent: "space-evenly",
+                            marginTop: "20px",
                         }}
                     >
-                        {"Finalizar"}
+                        {Object.entries(resultValues).map(
+                            ([category, value]) => (
+                                <div
+                                    key={category}
+                                    style={{
+                                        marginBottom: "10px",
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    {/* Barra vertical */}
+                                    <div
+                                        style={{
+                                            width: "30px", // Largura das barras
+                                            height: `${
+                                                (value /
+                                                    Math.max(
+                                                        ...Object.values(
+                                                            resultValues
+                                                        )
+                                                    )) *
+                                                200
+                                            }px`, // Altura proporcional ao valor
+                                            backgroundColor:
+                                                categoryColors[
+                                                    category as RiasecCategory
+                                                ], // Aplica a cor com base na categoria
+                                            borderRadius: "5px",
+                                            marginBottom: "5px",
+                                        }}
+                                    >
+                                        {/* Exibindo o valor no topo da barra */}
+                                        <span
+                                            style={{
+                                                position: "absolute",
+                                                bottom: "100%",
+                                                width: "100%",
+                                                textAlign: "center",
+                                                paddingBottom: "5px",
+                                                color: "black",
+                                            }}
+                                        >
+                                            {value}
+                                        </span>
+                                    </div>
+                                    {/* Inicial da categoria abaixo da barra */}
+                                    <span
+                                        style={{
+                                            display: "block",
+                                            marginTop: "5px",
+                                        }}
+                                    >
+                                        {category[0]}{" "}
+                                        {/* Pegando apenas a primeira letra */}
+                                    </span>
+                                </div>
+                            )
+                        )}
+                    </div>
+                    <div style={{ textAlign: "center", marginTop: "20px" }}>
+                        <p>Sua personalidade profissional:</p>
+                        <strong>{userResult}</strong>{" "}
+                        {/* Resultado abaixo do texto */}
+                    </div>
+                    <div
+                        style={{
+                            marginTop: "10px",
+                            maxWidth: "200px",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            textAlign: "center",
+                        }}
+                    >
+                        <p>
+                            {categoryDescriptions[userResult as RiasecCategory]}
+                        </p>
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setResultDialogOpen(false)}>
+                        Fechar
                     </Button>
                 </DialogActions>
             </Dialog>
