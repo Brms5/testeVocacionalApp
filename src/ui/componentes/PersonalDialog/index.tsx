@@ -12,7 +12,19 @@ import {
     FormControlLabel,
     FormControl,
     FormLabel,
+    Popover,
+    Typography,
+    Divider,
+    Chip,
+    Box,
+    List,
+    ListItem,
+    ListItemText,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
 } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { questaoService } from "@/client/services/Questao";
 import { useEffect } from "react";
 import { resultadoRiasecService } from "@/client/services/ResultadoRiasec";
@@ -42,11 +54,110 @@ const categoryDescriptions: Record<RiasecCategory, string> = {
         "Você gosta de resolver problemas complexos e busca aprender e explorar novas ideias de forma analítica.",
     Artístico:
         "Você tem uma forte capacidade criativa, com grande interesse por atividades artísticas e expressão pessoal.",
-    Social: "Você sente prazer em ajudar os outros, sendo mais voltado para interações interpessoais e atividades colaborativas.",
+    Social: 
+        "Você sente prazer em ajudar os outros, sendo mais voltado para interações interpessoais e atividades colaborativas.",
     Empreendedor:
         "Você é focado em resultados, com uma grande capacidade para tomar riscos e liderar projetos.",
     Convencional:
         "Você é detalhista e gosta de seguir regras e processos, com uma forte orientação para o planejamento e organização.",
+};
+
+const categoryProfessions: Record<RiasecCategory, { professions: string[], relatedPathways: string[] }> = {
+    Realista: {
+        professions: [
+            "Agricultura",
+            "Assistente de Saúde",
+            "Computação",
+            "Construção",
+            "Mecânico/Maquinista",
+            "Engenharia",
+            "Alimentação e Hospitalidade",
+        ],
+        relatedPathways: [
+            "Recursos Naturais",
+            "Serviços de Saúde",
+            "Tecnologia Industrial e de Engenharia",
+            "Artes e Comunicação",
+        ],
+    },
+    Investigativo: {
+        professions: [
+            "Biologia Marinha",
+            "Engenharia",
+            "Química",
+            "Zoologia",
+            "Medicina/Cirurgia",
+            "Economia do Consumidor",
+            "Psicologia",
+        ],
+        relatedPathways: [
+            "Serviços de Saúde",
+            "Negócios",
+            "Serviços Públicos e Humanos",
+            "Tecnologia Industrial e de Engenharia",
+        ],
+    },
+    Artístico: {
+        professions: [
+            "Comunicações",
+            "Cosmetologia",
+            "Artes Cênicas e de Performance",
+            "Fotografia",
+            "Rádio e TV",
+            "Design de Interiores",
+            "Arquitetura",
+        ],
+        relatedPathways: [
+            "Serviços Públicos e Humanos",
+            "Artes e Comunicação",
+        ],
+    },
+    Social: {
+        professions: [
+            "Aconselhamento",
+            "Enfermagem",
+            "Fisioterapia",
+            "Turismo",
+            "Publicidade",
+            "Relações Públicas",
+            "Educação",
+        ],
+        relatedPathways: [
+            "Serviços de Saúde",
+            "Serviços Públicos e Humanos",
+        ],
+    },
+    Empreendedor: {
+        professions: [
+            "Merchandising de Moda",
+            "Imobiliário",
+            "Marketing/Vendas",
+            "Direito",
+            "Ciência Política",
+            "Comércio Internacional",
+            "Bancos/Finanças",
+        ],
+        relatedPathways: [
+            "Negócios",
+            "Serviços Públicos e Humanos",
+            "Artes e Comunicação",
+        ],
+    },
+    Convencional: {
+        professions: [
+            "Contabilidade",
+            "Relatórios Judiciais",
+            "Seguros",
+            "Administração",
+            "Registros Médicos",
+            "Bancos",
+        ],
+        relatedPathways: [
+            "Serviços de Saúde",
+            "Negócios",
+            "Tecnologia Industrial e de Engenharia",
+        ],
+    },
 };
 
 const categoryColors: Record<RiasecCategory, string> = {
@@ -76,6 +187,39 @@ export default function MultiStepDialog() {
         Empreendedor: 0,
         Convencional: 0,
     });
+
+    // Estados para controlar o popover de descrição da categoria
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+    const [popoverContent, setPopoverContent] = React.useState<{
+        description: string;
+        professions: string[];
+        pathways: string[];
+    }>({
+        description: "",
+        professions: [],
+        pathways: [],
+    });
+    const [popoverTitle, setPopoverTitle] = React.useState<string>("");
+
+    // Função para abrir o popover ao clicar na barra
+    const handleBarClick = (event: React.MouseEvent<HTMLDivElement>, category: RiasecCategory) => {
+        setAnchorEl(event.currentTarget);
+        setPopoverTitle(category);
+        setPopoverContent({
+            description: categoryDescriptions[category],
+            professions: categoryProfessions[category].professions,
+            pathways: categoryProfessions[category].relatedPathways,
+        });
+    };
+
+    // Função para fechar o popover
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    // Verifica se o popover está aberto
+    const open_popover = Boolean(anchorEl);
+    const popover_id = open_popover ? 'category-popover' : undefined;
 
     useEffect(() => {
         questaoService
@@ -176,6 +320,82 @@ export default function MultiStepDialog() {
         setResultDialogOpen(true);
     };
 
+    // Função para renderizar as descrições de todas as categorias empatadas
+    const renderCategoryDescriptions = () => {
+        if (!userResult) return null;
+        
+        // Divide a string de resultado em categorias individuais
+        const categories = userResult.split(", ");
+        
+        return (
+            <>
+                {categories.map((category, index) => (
+                    <div key={index} style={{ marginBottom: "15px" }}>
+                        <strong>{category}:</strong>
+                        <p>{categoryDescriptions[category as RiasecCategory]}</p>
+                    </div>
+                ))}
+            </>
+        );
+    };
+
+    // Função para renderizar as profissões e caminhos relacionados às categorias com maior pontuação
+    const renderCategoryProfessions = () => {
+        if (!userResult) return null;
+        
+        // Divide a string de resultado em categorias individuais
+        const categories = userResult.split(", ");
+        
+        return (
+            <>
+                {categories.map((category, index) => (
+                    <Accordion key={index} defaultExpanded={index === 0}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            style={{
+                                backgroundColor: categoryColors[category as RiasecCategory] + "33", // Adiciona transparência à cor
+                            }}
+                        >
+                            <Typography variant="h6">{category}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="subtitle1" fontWeight="bold">
+                                    Profissões relacionadas:
+                                </Typography>
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+                                    {categoryProfessions[category as RiasecCategory].professions.map((profession, i) => (
+                                        <Chip 
+                                            key={i} 
+                                            label={profession} 
+                                            variant="outlined" 
+                                            style={{ 
+                                                borderColor: categoryColors[category as RiasecCategory],
+                                                margin: '4px'
+                                            }} 
+                                        />
+                                    ))}
+                                </Box>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle1" fontWeight="bold">
+                                    Caminhos relacionados:
+                                </Typography>
+                                <List dense>
+                                    {categoryProfessions[category as RiasecCategory].relatedPathways.map((pathway, i) => (
+                                        <ListItem key={i}>
+                                            <ListItemText primary={pathway} />
+                                        </ListItem>
+                                    ))}
+                                </List>
+                            </Box>
+                        </AccordionDetails>
+                    </Accordion>
+                ))}
+            </>
+        );
+    };
+
     return (
         <React.Fragment>
             <Button variant="outlined" onClick={handleClickOpen}>
@@ -255,6 +475,8 @@ export default function MultiStepDialog() {
             <Dialog
                 open={resultDialogOpen}
                 onClose={() => setResultDialogOpen(false)}
+                maxWidth="md"
+                fullWidth
             >
                 <DialogTitle style={{ textAlign: "center" }}>
                     Resultado do Teste
@@ -266,6 +488,7 @@ export default function MultiStepDialog() {
                             alignItems: "flex-end",
                             justifyContent: "space-evenly",
                             marginTop: "20px",
+                            marginBottom: "30px",
                         }}
                     >
                         {Object.entries(resultValues).map(
@@ -277,8 +500,9 @@ export default function MultiStepDialog() {
                                         textAlign: "center",
                                     }}
                                 >
-                                    {/* Barra vertical */}
+                                    {/* Barra vertical clicável */}
                                     <div
+                                        onClick={(e) => handleBarClick(e, category as RiasecCategory)}
                                         style={{
                                             width: "30px", // Largura das barras
                                             height: `${
@@ -296,6 +520,11 @@ export default function MultiStepDialog() {
                                                 ], // Aplica a cor com base na categoria
                                             borderRadius: "5px",
                                             marginBottom: "5px",
+                                            cursor: "pointer", // Adiciona cursor de ponteiro para indicar que é clicável
+                                            transition: "transform 0.2s", // Adiciona transição suave
+                                            "&:hover": {
+                                                transform: "scale(1.05)", // Efeito de escala ao passar o mouse
+                                            },
                                         }}
                                     >
                                         {/* Exibindo o valor no topo da barra */}
@@ -326,24 +555,90 @@ export default function MultiStepDialog() {
                             )
                         )}
                     </div>
-                    <div style={{ textAlign: "center", marginTop: "20px" }}>
-                        <p>Sua personalidade profissional:</p>
-                        <strong>{userResult}</strong>{" "}
-                        {/* Resultado abaixo do texto */}
+                    
+                    <Divider sx={{ my: 2 }} />
+                    
+                    <div style={{ textAlign: "center", marginTop: "20px", marginBottom: "20px" }}>
+                        <Typography variant="h6">Sua personalidade profissional:</Typography>
+                        <Typography variant="h5" fontWeight="bold" color="primary">{userResult}</Typography>
                     </div>
+                    
                     <div
                         style={{
                             marginTop: "10px",
-                            maxWidth: "200px",
+                            maxWidth: "800px",
                             marginLeft: "auto",
                             marginRight: "auto",
-                            textAlign: "center",
                         }}
                     >
-                        <p>
-                            {categoryDescriptions[userResult as RiasecCategory]}
-                        </p>
+                        {renderCategoryDescriptions()}
                     </div>
+                    
+                    <Divider sx={{ my: 3 }} />
+                    
+                    <Typography variant="h6" align="center" gutterBottom>
+                        Profissões e Caminhos Recomendados
+                    </Typography>
+                    
+                    <Box sx={{ mt: 2 }}>
+                        {renderCategoryProfessions()}
+                    </Box>
+                    
+                    {/* Popover para exibir a descrição da categoria ao clicar na barra */}
+                    <Popover
+                        id={popover_id}
+                        open={open_popover}
+                        anchorEl={anchorEl}
+                        onClose={handlePopoverClose}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                    >
+                        <Box sx={{ p: 3, maxWidth: '350px' }}>
+                            <Typography variant="h6" sx={{ mb: 1, color: 'primary.main' }}>
+                                {popoverTitle}
+                            </Typography>
+                            
+                            <Typography variant="body2" paragraph>
+                                {popoverContent.description}
+                            </Typography>
+                            
+                            <Divider sx={{ my: 1.5 }} />
+                            
+                            <Typography variant="subtitle2" fontWeight="bold">
+                                Profissões relacionadas:
+                            </Typography>
+                            
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1, mb: 1.5 }}>
+                                {popoverContent.professions.map((profession, index) => (
+                                    <Chip 
+                                        key={index} 
+                                        label={profession} 
+                                        size="small" 
+                                        variant="outlined" 
+                                        style={{ margin: '2px' }} 
+                                    />
+                                ))}
+                            </Box>
+                            
+                            <Typography variant="subtitle2" fontWeight="bold">
+                                Caminhos relacionados:
+                            </Typography>
+                            
+                            <List dense sx={{ mt: 0.5 }}>
+                                {popoverContent.pathways.map((pathway, index) => (
+                                    <ListItem key={index} sx={{ py: 0 }}>
+                                        <ListItemText primary={pathway} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Box>
+                    </Popover>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setResultDialogOpen(false)}>
