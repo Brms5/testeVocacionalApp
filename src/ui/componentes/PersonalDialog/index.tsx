@@ -20,11 +20,7 @@ import {
     List,
     ListItem,
     ListItemText,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { questaoService } from "@/client/services/Questao";
 import { useEffect } from "react";
 import { resultadoRiasecService } from "@/client/services/ResultadoRiasec";
@@ -197,6 +193,11 @@ export default function MultiStepDialog() {
     });
     const [popoverTitle, setPopoverTitle] = React.useState<string>("");
 
+    // Estado para controlar qual categoria está expandida na seção de profissões
+    const [expandedCategory, setExpandedCategory] = React.useState<
+        string | null
+    >(null);
+
     // Função para abrir o popover ao clicar na barra
     const handleBarClick = (
         event: React.MouseEvent<HTMLDivElement>,
@@ -214,6 +215,11 @@ export default function MultiStepDialog() {
     // Função para fechar o popover
     const handlePopoverClose = () => {
         setAnchorEl(null);
+    };
+
+    // Função para alternar a expansão de uma categoria
+    const handleCategoryToggle = (category: string) => {
+        setExpandedCategory(expandedCategory === category ? null : category);
     };
 
     // Verifica se o popover está aberto
@@ -317,6 +323,11 @@ export default function MultiStepDialog() {
             strongestCategory.map(([category]) => category).join(", ")
         );
         setResultDialogOpen(true);
+
+        // Define a primeira categoria como expandida por padrão
+        if (strongestCategory.length > 0) {
+            setExpandedCategory(strongestCategory[0][0]);
+        }
     };
 
     // Função para renderizar as descrições de todas as categorias empatadas
@@ -350,70 +361,93 @@ export default function MultiStepDialog() {
         return (
             <>
                 {categories.map((category, index) => (
-                    <Accordion key={index} defaultExpanded={index === 0}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
+                    <div
+                        key={index}
+                        style={{
+                            marginBottom: "20px",
+                            border: "1px solid #e0e0e0",
+                            borderRadius: "8px",
+                            overflow: "hidden",
+                        }}
+                    >
+                        {/* Cabeçalho da categoria (substitui AccordionSummary) */}
+                        <div
+                            onClick={() => handleCategoryToggle(category)}
                             style={{
+                                padding: "10px 15px",
                                 backgroundColor:
                                     categoryColors[category as RiasecCategory] +
-                                    "33", // Adiciona transparência à cor
+                                    "33",
+                                cursor: "pointer",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
                             }}
                         >
                             <Typography variant="h6">{category}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Box sx={{ mb: 2 }}>
-                                <Typography
-                                    variant="subtitle1"
-                                    fontWeight="bold"
-                                >
-                                    Profissões relacionadas:
-                                </Typography>
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        gap: 1,
-                                        mt: 1,
-                                    }}
-                                >
-                                    {categoryProfessions[
-                                        category as RiasecCategory
-                                    ].professions.map((profession, i) => (
-                                        <Chip
-                                            key={i}
-                                            label={profession}
-                                            variant="outlined"
-                                            style={{
-                                                borderColor:
-                                                    categoryColors[
-                                                        category as RiasecCategory
-                                                    ],
-                                                margin: "4px",
-                                            }}
-                                        />
-                                    ))}
+                            <span>
+                                {expandedCategory === category ? "▲" : "▼"}
+                            </span>
+                        </div>
+
+                        {/* Conteúdo da categoria (substitui AccordionDetails) */}
+                        {expandedCategory === category && (
+                            <div style={{ padding: "15px" }}>
+                                <Box sx={{ mb: 2 }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                    >
+                                        Profissões relacionadas:
+                                    </Typography>
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            gap: 1,
+                                            mt: 1,
+                                        }}
+                                    >
+                                        {categoryProfessions[
+                                            category as RiasecCategory
+                                        ].professions.map((profession, i) => (
+                                            <Chip
+                                                key={i}
+                                                label={profession}
+                                                variant="outlined"
+                                                style={{
+                                                    borderColor:
+                                                        categoryColors[
+                                                            category as RiasecCategory
+                                                        ],
+                                                    margin: "4px",
+                                                }}
+                                            />
+                                        ))}
+                                    </Box>
                                 </Box>
-                            </Box>
-                            <Box>
-                                <Typography
-                                    variant="subtitle1"
-                                    fontWeight="bold"
-                                >
-                                    Caminhos relacionados:
-                                </Typography>
-                                <List dense>
-                                    {categoryProfessions[
-                                        category as RiasecCategory
-                                    ].relatedPathways.map((pathway, i) => (
-                                        <ListItem key={i}>
-                                            <ListItemText primary={pathway} />
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Box>
-                        </AccordionDetails>
-                    </Accordion>
+                                <Box>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                    >
+                                        Caminhos relacionados:
+                                    </Typography>
+                                    <List dense>
+                                        {categoryProfessions[
+                                            category as RiasecCategory
+                                        ].relatedPathways.map((pathway, i) => (
+                                            <ListItem key={i}>
+                                                <ListItemText
+                                                    primary={pathway}
+                                                />
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </Box>
+                            </div>
+                        )}
+                    </div>
                 ))}
             </>
         );
@@ -550,9 +584,6 @@ export default function MultiStepDialog() {
                                             marginBottom: "5px",
                                             cursor: "pointer", // Adiciona cursor de ponteiro para indicar que é clicável
                                             transition: "transform 0.2s", // Adiciona transição suave
-                                            "&:hover": {
-                                                transform: "scale(1.05)", // Efeito de escala ao passar o mouse
-                                            },
                                         }}
                                     >
                                         {/* Exibindo o valor no topo da barra */}
