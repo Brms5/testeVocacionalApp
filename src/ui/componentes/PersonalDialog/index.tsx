@@ -725,24 +725,28 @@ export default function MultiStepDialog() {
                             </List>
                         </Box>
                     </Popover>
+                    {/* Descrição e acesso do Painel Tableau */}
                     <div className="text-center mt-5 mb-4">
-                    <h2 className="text-2xl font-semibold mb-2">
-                        Exploração de Carreiras
-                    </h2>
-                    <p className="text-base mb-4">
-                        Você já conhece seu perfil — agora mergulhe nas profissões que combinam com ele. 
-                    </p>
-                    <p className="text-base mb-4">
-                        Acesse o painel interativo e veja detalhes, possibilidades e caminhos para sua jornada profissional.
-                    </p>
-                    <a
-                        href="https://public.tableau.com/app/profile/welinton.passos/viz/Profisses-RIASEC/PginaPrincipal"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
-                    >
-                        Acessar Painel Interativo
-                    </a>
+                        <h2 className="text-2xl font-semibold mb-2">
+                            Exploração de Carreiras
+                        </h2>
+                        <p className="text-base mb-4">
+                            Você já conhece seu perfil — agora mergulhe nas
+                            profissões que combinam com ele.
+                        </p>
+                        <p className="text-base mb-4">
+                            Acesse o painel interativo e veja detalhes,
+                            possibilidades e caminhos para sua jornada
+                            profissional.
+                        </p>
+                        <a
+                            href="https://public.tableau.com/app/profile/welinton.passos/viz/Profisses-RIASEC/PginaPrincipal"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
+                        >
+                            Acessar Painel
+                        </a>
                     </div>
                 </DialogContent>
                 <DialogActions>
